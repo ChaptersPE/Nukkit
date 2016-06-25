@@ -78,7 +78,6 @@ public class Server implements Runnable {
         System.setOut(new PrintStream(new LoggerOutputStream(rootLogger, Level.INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(rootLogger, Level.WARN), true));
         (new Thread(this, "Server Thread")).start();
-
     }
 
     @Override
