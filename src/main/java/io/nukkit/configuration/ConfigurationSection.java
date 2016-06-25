@@ -1,8 +1,8 @@
 package io.nukkit.configuration;
 
 
-import io.nukkit.util.Vector;
 import io.nukkit.util.Color;
+import io.nukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;

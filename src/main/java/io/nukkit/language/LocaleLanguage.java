@@ -17,12 +17,16 @@ public class LocaleLanguage {
 
     private static final Pattern pattern = Pattern.compile("%(\\d+\\$)?[\\d\\.]*[df]");
     private static final Splitter splitter = Splitter.on('=').limit(2);
-    private static LocaleLanguage language = new LocaleLanguage(Locale.US);
+    private static LocaleLanguage language = new LocaleLanguage(Locale.ENGLISH);
     private final Map<String, String> formats = new HashMap<>();
 
     public LocaleLanguage(Locale locale) {
         try {
             InputStream stream = LocaleLanguage.class.getResourceAsStream("/lang/" + locale.toString() + ".lang");
+
+            if (stream == null) {
+                stream = LocaleLanguage.class.getResourceAsStream("/lang/" + locale.getLanguage() + ".lang");
+            }
 
             if (stream != null) {
                 for (String line : IOUtils.readLines(stream, StandardCharsets.UTF_8)) {

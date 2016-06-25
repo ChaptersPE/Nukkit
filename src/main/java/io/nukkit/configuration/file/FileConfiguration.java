@@ -3,9 +3,9 @@ package io.nukkit.configuration.file;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import io.nukkit.configuration.Configuration;
+import io.nukkit.configuration.InvalidConfigurationException;
 import io.nukkit.configuration.MemoryConfiguration;
 import org.apache.commons.lang3.Validate;
-import io.nukkit.configuration.InvalidConfigurationException;
 
 import java.io.*;
 

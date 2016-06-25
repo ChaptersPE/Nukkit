@@ -1,8 +1,8 @@
 package io.nukkit.configuration;
 
-import io.nukkit.util.*;
-import org.apache.commons.lang3.Validate;
 import io.nukkit.util.Color;
+import io.nukkit.util.NumberConversions;
+import org.apache.commons.lang3.Validate;
 
 import java.util.*;
 

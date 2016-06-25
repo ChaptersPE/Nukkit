@@ -1,11 +1,11 @@
 package io.nukkit.configuration.file;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.logging.log4j.Level;
 import io.nukkit.Nukkit;
 import io.nukkit.configuration.Configuration;
 import io.nukkit.configuration.ConfigurationSection;
 import io.nukkit.configuration.InvalidConfigurationException;
+import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.Level;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;

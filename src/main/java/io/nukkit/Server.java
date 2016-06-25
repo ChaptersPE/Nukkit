@@ -1,16 +1,15 @@
 package io.nukkit;
 
+import io.nukkit.util.ConsoleHandler;
+import io.nukkit.util.ConsoleWriter;
 import io.nukkit.util.LoggerOutputStream;
+import io.nukkit.util.ServerShutdownThread;
 import jline.UnsupportedTerminal;
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import io.nukkit.util.ConsoleHandler;
-import io.nukkit.util.ConsoleWriter;
-import io.nukkit.util.ServerShutdownThread;
-import org.apache.logging.log4j.core.appender.SyslogAppender;
 
 import java.io.IOException;
 import java.io.PrintStream;

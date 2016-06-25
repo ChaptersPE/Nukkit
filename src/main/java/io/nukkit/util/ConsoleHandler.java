@@ -1,8 +1,8 @@
 package io.nukkit.util;
 
+import io.nukkit.Nukkit;
 import io.nukkit.Server;
 import jline.console.ConsoleReader;
-import io.nukkit.Nukkit;
 
 import java.io.IOException;
 

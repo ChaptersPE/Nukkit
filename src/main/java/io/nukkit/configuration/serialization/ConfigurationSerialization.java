@@ -2,9 +2,9 @@ package io.nukkit.configuration.serialization;
 
 
 import io.nukkit.configuration.Configuration;
+import io.nukkit.util.Color;
 import io.nukkit.util.Vector;
 import org.apache.commons.lang3.Validate;
-import io.nukkit.util.Color;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

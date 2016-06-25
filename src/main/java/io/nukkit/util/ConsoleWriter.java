@@ -1,13 +1,13 @@
 package io.nukkit.util;
 
 
+import io.nukkit.Nukkit;
 import jline.console.ConsoleReader;
 import jline.console.CursorBuffer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Attribute;
-import io.nukkit.Nukkit;
 
 import java.io.IOException;
 import java.io.OutputStream;

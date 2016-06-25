@@ -5,6 +5,7 @@ package io.nukkit.util;
  * Nukkit Project
  */
 
+import io.nukkit.Nukkit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -14,7 +15,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import io.nukkit.Nukkit;
 
 import java.io.Serializable;
 import java.util.HashMap;
