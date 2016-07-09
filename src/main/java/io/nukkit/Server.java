@@ -1,20 +1,18 @@
 package io.nukkit;
 
-import io.nukkit.util.ConsoleHandler;
-import io.nukkit.util.ConsoleWriter;
-import io.nukkit.util.LoggerOutputStream;
-import io.nukkit.util.ServerShutdownThread;
+import io.nukkit.plugin.PluginManager;
+import io.nukkit.util.*;
 import jline.UnsupportedTerminal;
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * author: MagicDroidX
@@ -22,7 +20,9 @@ import java.util.List;
  */
 public class Server implements Runnable {
 
-    public static final Logger LOGGER = LogManager.getLogger();
+    private final String serverVersion;
+    private final String nukkitVersion = Versioning.getNukkitVersion();
+    private final Logger logger = Logger.getLogger("Minecraft");
 
     public OptionSet options;
 
@@ -51,6 +51,8 @@ public class Server implements Runnable {
             }
         }
 
+        this.serverVersion = Server.class.getPackage().getImplementationVersion();
+
         try {
             this.reader = new ConsoleReader(System.in, System.out);
             this.reader.setExpandEvents(false);
@@ -63,7 +65,7 @@ public class Server implements Runnable {
                 this.reader = new ConsoleReader(System.in, System.out);
                 this.reader.setExpandEvents(false);
             } catch (IOException ex) {
-                LOGGER.warn((String) null, ex);
+                this.getLogger().log(Level.WARNING, null, ex);
             }
         }
 
@@ -73,9 +75,9 @@ public class Server implements Runnable {
 
         (new ConsoleWriter(System.out, this.reader)).start();
 
-        Logger rootLogger = LogManager.getRootLogger();
-        System.setOut(new PrintStream(new LoggerOutputStream(rootLogger, Level.INFO), true));
-        System.setErr(new PrintStream(new LoggerOutputStream(rootLogger, Level.WARN), true));
+        org.apache.logging.log4j.Logger rootLogger = LogManager.getRootLogger();
+        System.setOut(new PrintStream(new LoggerOutputStream(rootLogger, org.apache.logging.log4j.Level.INFO), true));
+        System.setErr(new PrintStream(new LoggerOutputStream(rootLogger, org.apache.logging.log4j.Level.WARN), true));
         (new Thread(this, "Server Thread")).start();
     }
 
@@ -100,20 +102,24 @@ public class Server implements Runnable {
 
     }
 
-    public void issueCommand(String command) {
-        this.commandQueue.add(command);
-    }
-
-    public void dispatchCommand(String command) {
-        LOGGER.info(command);
-    }
-
     public boolean isRunning() {
         return this.isRunning;
     }
 
     public boolean isStopped() {
         return this.isStopped;
+    }
+
+    public String getName() {
+        return "Nukkit";
+    }
+
+    public String getVersion() {
+        return this.serverVersion + " (MCPE: " + Nukkit.MINECRAFT_VERSION + ")";
+    }
+
+    public String getNukkitVersion() {
+        return nukkitVersion;
     }
 
     public int getPort() {
@@ -124,7 +130,20 @@ public class Server implements Runnable {
         this.port = port;
     }
 
-    public static Logger getLogger() {
-        return LOGGER;
+    public PluginManager getPluginManager() {
+        return null;
+        //TODO:
+    }
+
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public void issueCommand(String command) {
+        this.commandQueue.add(command);
+    }
+
+    public void dispatchCommand(String command) {
+        this.getLogger().info(command);
     }
 }

@@ -606,7 +606,6 @@ public interface ConfigurationSection {
      */
     List<Map<?, ?>> getMapList(String path);
 
-    // Bukkit
 
     /**
      * Gets the requested Vector by path.

@@ -20,7 +20,7 @@ public abstract class MetadataStoreBase<T> {
      * {@code metadataMap}, but decided that the added overhead wasn't worth
      * the finer grained access control.
      * <p>
-     * Bukkit is almost entirely single threaded so locking overhead shouldn't
+     * Nukkit is almost entirely single threaded so locking overhead shouldn't
      * pose a problem.
      *
      * @param subject          The object receiving the metadata.

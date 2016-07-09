@@ -1,5 +1,7 @@
 package io.nukkit;
 
+import io.nukkit.scheduler.Scheduler;
+import io.nukkit.util.Versioning;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -24,6 +26,58 @@ public class Nukkit {
 
     public static boolean useJline = true;
     public static boolean useConsole = true;
+
+    public final static String VERSION = Versioning.getNukkitVersion();
+    public final static int API_VERSION = 2;
+    public final static String CODENAME = "Brynhildr";
+    public final static String MINECRAFT_VERSION = "v0.15.0 alpha";
+    public final static String MINECRAFT_VERSION_NETWORK = "0.15.0";
+
+    private static Server server;
+
+    public static Server getServer() {
+        return server;
+    }
+
+    public static void setServer(Server server) {
+        if (Nukkit.server != null) {
+            throw new UnsupportedOperationException("Cannot redefine singleton Server");
+        }
+
+        Nukkit.server = server;
+        server.getLogger().info("This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getNukkitVersion() + ")");
+
+    }
+
+    /**
+     * @see Server#getName()
+     */
+    public static String getName() {
+        return server.getName();
+    }
+
+    /**
+     * @see Server#getVersion()
+     */
+    public static String getVersion() {
+        return server.getVersion();
+    }
+
+    /**
+     * @see Server#getNukkitVersion()
+     */
+    public static String getNukkitVersion() {
+        return server.getNukkitVersion();
+    }
+
+    public static Scheduler getScheduler() {
+        return null;
+        //TODO: IMPLEMENT THIS
+    }
+
+    public static Logger getLogger() {
+        return server.getLogger();
+    }
 
     public static void main(String[] args) {
 
@@ -98,15 +152,11 @@ public class Nukkit {
                     context.updateLoggers();
                 }
 
-                new Server(optionSet);
+                Nukkit.server = new Server(optionSet);
             } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static Logger getLogger() {
-        return Server.getLogger();
     }
 
     private static List<String> asList(String... params) {

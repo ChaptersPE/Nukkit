@@ -669,7 +669,6 @@ public class MemorySection implements ConfigurationSection {
         return result;
     }
 
-    // Bukkit
     public io.nukkit.util.Vector getVector(String path) {
         Object def = getDefault(path);
         return getVector(path, (def instanceof io.nukkit.util.Vector) ? (io.nukkit.util.Vector) def : null);
