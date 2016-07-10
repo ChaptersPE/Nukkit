@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public final class Versioning {
     public static String getNukkitVersion() {
-        String result = "Unknown-Version";
+        String result = Nukkit.VERSION_UNKNOWN;
         InputStream stream = Nukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/io.nukkit/nukkit/pom.properties");
         Properties properties = new Properties();
         if (stream != null) {

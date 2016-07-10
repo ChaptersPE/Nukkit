@@ -1,15 +1,15 @@
 package io.nukkit.command;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.Server;
-import org.bukkit.command.defaults.*;
-import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
+import io.nukkit.Server;
+import io.nukkit.command.defaults.VanillaCommand;
+import io.nukkit.entity.Player;
+import io.nukkit.util.StringUtil;
+import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.Level;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.bukkit.util.Java15Compat.Arrays_copyOfRange;
 
 public class SimpleCommandMap implements CommandMap {
     private static final Pattern PATTERN_ON_SPACE = Pattern.compile(" ", Pattern.LITERAL);
@@ -22,18 +22,20 @@ public class SimpleCommandMap implements CommandMap {
     }
 
     private void setDefaultCommands() {
-        register("bukkit", new SaveCommand());
+        //TODO
+        /*register("bukkit", new SaveCommand());
         register("bukkit", new SaveOnCommand());
         register("bukkit", new SaveOffCommand());
         register("bukkit", new StopCommand());
         register("bukkit", new VersionCommand("version"));
         register("bukkit", new ReloadCommand("reload"));
         register("bukkit", new PluginsCommand("plugins"));
-        register("bukkit", new TimingsCommand("timings"));
+        register("bukkit", new TimingsCommand("timings"));*/
     }
 
     public void setFallbackCommands() {
-        register("bukkit", new ListCommand());
+        //TODO
+        /*register("bukkit", new ListCommand());
         register("bukkit", new OpCommand());
         register("bukkit", new DeopCommand());
         register("bukkit", new BanIpCommand());
@@ -69,7 +71,7 @@ public class SimpleCommandMap implements CommandMap {
         register("bukkit", new SpreadPlayersCommand());
         register("bukkit", new SetWorldSpawnCommand());
         register("bukkit", new SetIdleTimeoutCommand());
-        register("bukkit", new AchievementCommand());
+        register("bukkit", new AchievementCommand());*/
     }
 
     /**
@@ -171,7 +173,7 @@ public class SimpleCommandMap implements CommandMap {
 
         try {
             // Note: we don't return the result of target.execute as thats success / failure, we return handled (true) or not handled (false)
-            target.execute(sender, sentCommandLabel, Arrays_copyOfRange(args, 1, args.length));
+            target.execute(sender, sentCommandLabel, Arrays.copyOfRange(args, 1, args.length));
         } catch (CommandException ex) {
             throw ex;
         } catch (Throwable ex) {
@@ -256,7 +258,7 @@ public class SimpleCommandMap implements CommandMap {
 
         for (String alias : values.keySet()) {
             if (alias.contains(":") || alias.contains(" ")) {
-                server.getLogger().warning("Could not register alias " + alias + " because it contains illegal characters");
+                server.getLogger().log(Level.WARN, "Could not register alias " + alias + " because it contains illegal characters");
                 continue;
             }
 
@@ -279,7 +281,7 @@ public class SimpleCommandMap implements CommandMap {
             }
 
             if (bad.length() > 0) {
-                server.getLogger().warning("Could not register alias " + alias + " because it contains commands that do not exist: " + bad);
+                server.getLogger().log(Level.WARN, "Could not register alias " + alias + " because it contains commands that do not exist: " + bad);
                 continue;
             }
 

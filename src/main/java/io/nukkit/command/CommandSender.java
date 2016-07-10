@@ -1,7 +1,7 @@
 package io.nukkit.command;
 
-import org.bukkit.Server;
-import org.bukkit.permissions.Permissible;
+import io.nukkit.Server;
+import io.nukkit.permissions.Permissible;
 
 public interface CommandSender extends Permissible {
 

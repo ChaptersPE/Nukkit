@@ -1,6 +1,7 @@
 package io.nukkit.command;
 
-import org.bukkit.Bukkit;
+import io.nukkit.Nukkit;
+import io.nukkit.util.ChatColor;
 
 import java.util.ArrayList;
 
@@ -23,14 +24,14 @@ public class FormattedCommandAlias extends Command {
                 if (throwable instanceof IllegalArgumentException) {
                     sender.sendMessage(throwable.getMessage());
                 } else {
-                    sender.sendMessage(org.bukkit.ChatColor.RED + "An internal error occurred while attempting to perform this command");
+                    sender.sendMessage(ChatColor.RED + "An internal error occurred while attempting to perform this command");
                 }
                 return false;
             }
         }
 
         for (String command : commands) {
-            result |= Bukkit.dispatchCommand(sender, command);
+            result |= Nukkit.dispatchCommand(sender, command);
         }
 
         return result;

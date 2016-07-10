@@ -1,13 +1,25 @@
 package io.nukkit.plugin.java;
 
+import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.EbeanServerFactory;
+import com.avaje.ebean.config.DataSourceConfig;
+import com.avaje.ebean.config.ServerConfig;
+import com.avaje.ebeaninternal.api.SpiEbeanServer;
+import com.avaje.ebeaninternal.server.ddl.DdlGenerator;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import io.nukkit.Server;
+import io.nukkit.command.Command;
+import io.nukkit.command.CommandSender;
+import io.nukkit.command.PluginCommand;
+import io.nukkit.configuration.InvalidConfigurationException;
 import io.nukkit.configuration.file.FileConfiguration;
-import io.nukkit.plugin.PluginBase;
-import io.nukkit.plugin.PluginDescriptionFile;
-import io.nukkit.plugin.PluginLoader;
-import io.nukkit.plugin.PluginLogger;
+import io.nukkit.configuration.file.YamlConfiguration;
+import io.nukkit.generator.ChunkGenerator;
+import io.nukkit.plugin.*;
+import io.nukkit.util.Warning;
+import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.Level;
 
 import java.io.*;
 import java.net.URL;
@@ -15,8 +27,6 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Represents a Java plugin
@@ -173,19 +183,19 @@ public abstract class JavaPlugin extends PluginBase {
             try {
                 contents = ByteStreams.toByteArray(defConfigStream);
             } catch (final IOException e) {
-                getLogger().log(Level.SEVERE, "Unexpected failure reading config.yml", e);
+                getLogger().log(Level.ERROR, "Unexpected failure reading config.yml", e);
                 return;
             }
 
             final String text = new String(contents, Charset.defaultCharset());
             if (!text.equals(new String(contents, Charsets.UTF_8))) {
-                getLogger().warning("Default system encoding may have misread config.yml from plugin jar");
+                getLogger().log(Level.WARN, "Default system encoding may have misread config.yml from plugin jar");
             }
 
             try {
                 defConfig.loadFromString(text);
             } catch (final InvalidConfigurationException e) {
-                getLogger().log(Level.SEVERE, "Cannot load configuration from jar", e);
+                getLogger().log(Level.ERROR, "Cannot load configuration from jar", e);
             }
         }
 
@@ -201,7 +211,7 @@ public abstract class JavaPlugin extends PluginBase {
         try {
             getConfig().save(configFile);
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Could not save config to " + configFile, ex);
+            logger.log(Level.ERROR, "Could not save config to " + configFile, ex);
         }
     }
 
@@ -243,10 +253,10 @@ public abstract class JavaPlugin extends PluginBase {
                 out.close();
                 in.close();
             } else {
-                logger.log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+                logger.log(Level.WARN, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
             }
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+            logger.log(Level.ERROR, "Could not save " + outFile.getName() + " to " + outFile, ex);
         }
     }
 
@@ -303,10 +313,10 @@ public abstract class JavaPlugin extends PluginBase {
      */
     @Deprecated
     protected final void initialize(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file, ClassLoader classLoader) {
-        if (server.getWarningState() == WarningState.OFF) {
+        if (server.getWarningState() == Warning.WarningState.OFF) {
             return;
         }
-        getLogger().log(Level.WARNING, getClass().getName() + " is already initialized", server.getWarningState() == WarningState.DEFAULT ? null : new AuthorNagException("Explicit initialization"));
+        getLogger().log(Level.WARN, getClass().getName() + " is already initialized", server.getWarningState() == Warning.WarningState.DEFAULT ? null : new AuthorNagException("Explicit initialization"));
     }
 
     final void init(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file, ClassLoader classLoader) {
@@ -454,7 +464,7 @@ public abstract class JavaPlugin extends PluginBase {
     }
 
     @Override
-    public final Logger getLogger() {
+    public final PluginLogger getLogger() {
         return logger;
     }
 

@@ -2,7 +2,7 @@ package io.nukkit.plugin;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.nukkit.Bukkit;
+import io.nukkit.Nukkit;
 import io.nukkit.event.server.ServiceRegisterEvent;
 import io.nukkit.event.server.ServiceUnregisterEvent;
 
@@ -47,7 +47,7 @@ public class SimpleServicesManager implements ServicesManager {
             }
 
         }
-        Bukkit.getServer().getPluginManager().callEvent(new ServiceRegisterEvent(registeredProvider));
+        Nukkit.getServer().getPluginManager().callEvent(new ServiceRegisterEvent(registeredProvider));
     }
 
     /**
@@ -56,7 +56,7 @@ public class SimpleServicesManager implements ServicesManager {
      * @param plugin The plugin
      */
     public void unregisterAll(Plugin plugin) {
-        ArrayList<ServiceUnregisterEvent> unregisteredEvents = new ArrayList<ServiceUnregisterEvent>();
+        ArrayList<ServiceUnregisterEvent> unregisteredEvents = new ArrayList<>();
         synchronized (providers) {
             Iterator<Map.Entry<Class<?>, List<RegisteredServiceProvider<?>>>> it = providers.entrySet().iterator();
 
@@ -88,7 +88,7 @@ public class SimpleServicesManager implements ServicesManager {
             }
         }
         for (ServiceUnregisterEvent event : unregisteredEvents) {
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            Nukkit.getServer().getPluginManager().callEvent(event);
         }
     }
 
@@ -99,7 +99,7 @@ public class SimpleServicesManager implements ServicesManager {
      * @param provider The service provider implementation
      */
     public void unregister(Class<?> service, Object provider) {
-        ArrayList<ServiceUnregisterEvent> unregisteredEvents = new ArrayList<ServiceUnregisterEvent>();
+        ArrayList<ServiceUnregisterEvent> unregisteredEvents = new ArrayList<>();
         synchronized (providers) {
             Iterator<Map.Entry<Class<?>, List<RegisteredServiceProvider<?>>>> it = providers.entrySet().iterator();
 
@@ -137,7 +137,7 @@ public class SimpleServicesManager implements ServicesManager {
             }
         }
         for (ServiceUnregisterEvent event : unregisteredEvents) {
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            Nukkit.getServer().getPluginManager().callEvent(event);
         }
     }
 
@@ -147,7 +147,7 @@ public class SimpleServicesManager implements ServicesManager {
      * @param provider The service provider implementation
      */
     public void unregister(Object provider) {
-        ArrayList<ServiceUnregisterEvent> unregisteredEvents = new ArrayList<ServiceUnregisterEvent>();
+        ArrayList<ServiceUnregisterEvent> unregisteredEvents = new ArrayList<>();
         synchronized (providers) {
             Iterator<Map.Entry<Class<?>, List<RegisteredServiceProvider<?>>>> it = providers.entrySet().iterator();
 
@@ -179,7 +179,7 @@ public class SimpleServicesManager implements ServicesManager {
             }
         }
         for (ServiceUnregisterEvent event : unregisteredEvents) {
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            Nukkit.getServer().getPluginManager().callEvent(event);
         }
     }
 

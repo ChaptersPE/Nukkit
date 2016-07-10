@@ -6,14 +6,52 @@ import io.nukkit.configuration.Configuration;
 import io.nukkit.configuration.InvalidConfigurationException;
 import io.nukkit.configuration.MemoryConfiguration;
 import org.apache.commons.lang3.Validate;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * This is a base class for all File based implementations of {@link
  * Configuration}
  */
 public abstract class FileConfiguration extends MemoryConfiguration {
+
+    /**
+     * This value specified that the system default encoding should be
+     * completely ignored, as it cannot handle the ASCII character set, or it
+     * is a strict-subset of UTF8 already (plain ASCII).
+     *
+     * @deprecated temporary compatibility measure
+     */
+    @Deprecated
+    public static final boolean UTF8_OVERRIDE;
+    /**
+     * This value specifies if the system default encoding is unicode, but
+     * cannot parse standard ASCII.
+     *
+     * @deprecated temporary compatibility measure
+     */
+    @Deprecated
+    public static final boolean UTF_BIG;
+    /**
+     * This value specifies if the system supports unicode.
+     *
+     * @deprecated temporary compatibility measure
+     */
+    @Deprecated
+    public static final boolean SYSTEM_UTF;
+
+    static {
+        final byte[] testBytes = Base64Coder.decode("ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX4NCg==");
+        final String testString = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\r\n";
+        final Charset defaultCharset = Charset.defaultCharset();
+        final String resultString = new String(testBytes, defaultCharset);
+        final boolean trueUTF = defaultCharset.name().contains("UTF");
+        UTF8_OVERRIDE = !testString.equals(resultString) || defaultCharset.equals(Charset.forName("US-ASCII"));
+        SYSTEM_UTF = trueUTF || UTF8_OVERRIDE;
+        UTF_BIG = trueUTF && UTF8_OVERRIDE;
+    }
 
     /**
      * Creates an empty {@link FileConfiguration} with no default values.

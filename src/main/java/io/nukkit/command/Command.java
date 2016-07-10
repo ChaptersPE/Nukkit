@@ -1,15 +1,14 @@
 package io.nukkit.command;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.CommandMinecart;
-import org.bukkit.permissions.Permissible;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.util.StringUtil;
+import io.nukkit.Nukkit;
+import io.nukkit.Server;
+import io.nukkit.entity.Player;
+import io.nukkit.permissions.Permissible;
+import io.nukkit.plugin.PluginDescriptionFile;
+import io.nukkit.util.ChatColor;
+import io.nukkit.util.StringUtil;
+import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -351,24 +350,24 @@ public abstract class Command {
 
     public static void broadcastCommandMessage(CommandSender source, String message, boolean sendToSource) {
         String result = source.getName() + ": " + message;
-
-        if (source instanceof BlockCommandSender) {
+        //TODO: IMPLEMENT THIS WHEN THERE IS COMMAND BLOCK IN MINECRAFT:PE
+        /*if (source instanceof BlockCommandSender) {
             BlockCommandSender blockCommandSender = (BlockCommandSender) source;
 
             if (blockCommandSender.getBlock().getWorld().getGameRuleValue("commandBlockOutput").equalsIgnoreCase("false")) {
-                Bukkit.getConsoleSender().sendMessage(result);
+                Nukkit.getConsoleSender().sendMessage(result);
                 return;
             }
-        } else if (source instanceof CommandMinecart) {
+        }else if (source instanceof CommandMinecart) {
             CommandMinecart commandMinecart = (CommandMinecart) source;
 
             if (commandMinecart.getWorld().getGameRuleValue("commandBlockOutput").equalsIgnoreCase("false")) {
-                Bukkit.getConsoleSender().sendMessage(result);
+                Nukkit.getConsoleSender().sendMessage(result);
                 return;
             }
-        }
+        }*/
 
-        Set<Permissible> users = Bukkit.getPluginManager().getPermissionSubscriptions(Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
+        Set<Permissible> users = Nukkit.getPluginManager().getPermissionSubscriptions(Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
         String colored = ChatColor.GRAY + "" + ChatColor.ITALIC + "[" + result + ChatColor.GRAY + ChatColor.ITALIC + "]";
 
         if (sendToSource && !(source instanceof ConsoleCommandSender)) {

@@ -3,9 +3,9 @@ package io.nukkit.permissions;
 import io.nukkit.Nukkit;
 import io.nukkit.plugin.PluginManager;
 import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.Level;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Represents a unique permission that may be attached to a {@link
@@ -145,7 +145,7 @@ public class Permission {
      * @return Set containing permissibles with this permission
      */
     public Set<Permissible> getPermissibles() {
-        return Bukkit.getServer().getPluginManager().getPermissionSubscriptions(name);
+        return Nukkit.getServer().getPluginManager().getPermissionSubscriptions(name);
     }
 
     /**
@@ -175,7 +175,7 @@ public class Permission {
      * @return Parent permission it created or loaded
      */
     public Permission addParent(String name, boolean value) {
-        PluginManager pm = Bukkit.getServer().getPluginManager();
+        PluginManager pm = Nukkit.getServer().getPluginManager();
         String lname = name.toLowerCase();
 
         Permission perm = pm.getPermission(lname);
@@ -227,7 +227,7 @@ public class Permission {
             try {
                 result.add(Permission.loadPermission(entry.getKey().toString(), (Map<?, ?>) entry.getValue(), def, result));
             } catch (Throwable ex) {
-                Bukkit.getServer().getLogger().log(Level.SEVERE, String.format(error, entry.getKey()), ex);
+                Nukkit.getServer().getLogger().log(Level.ERROR, String.format(error, entry.getKey()), ex);
             }
         }
 

@@ -1,6 +1,6 @@
 package io.nukkit.command;
 
-import org.bukkit.plugin.Plugin;
+import io.nukkit.plugin.Plugin;
 
 /**
  * This interface is used by the help system to group commands into

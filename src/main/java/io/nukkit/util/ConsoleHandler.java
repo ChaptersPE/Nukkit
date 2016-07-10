@@ -3,8 +3,10 @@ package io.nukkit.util;
 import io.nukkit.Nukkit;
 import io.nukkit.Server;
 import jline.console.ConsoleReader;
+import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
+
 
 /**
  * author: MagicDroidX
@@ -40,7 +42,7 @@ public class ConsoleHandler extends Thread {
                     }
                 }
             } catch (IOException e) {
-                Server.LOGGER.error("Exception handling console input", e);
+                Nukkit.getLogger().log(Level.ERROR, "Exception handling console input", e);
             }
         }
     }

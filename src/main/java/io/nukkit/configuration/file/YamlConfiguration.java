@@ -47,7 +47,7 @@ public class YamlConfiguration extends FileConfiguration {
             config.load(file);
         } catch (FileNotFoundException ignored) {
         } catch (IOException | InvalidConfigurationException ex) {
-            Nukkit.getLogger().log(Level.FATAL, "Cannot load " + file, ex);
+            Nukkit.getLogger().log(Level.ERROR, "Cannot load " + file, ex);
         }
 
         return config;
@@ -76,7 +76,7 @@ public class YamlConfiguration extends FileConfiguration {
         try {
             config.load(stream);
         } catch (IOException | InvalidConfigurationException ex) {
-            Nukkit.getLogger().log(Level.FATAL, "Cannot load configuration from stream", ex);
+            Nukkit.getLogger().log(Level.ERROR, "Cannot load configuration from stream", ex);
         }
 
         return config;
@@ -101,7 +101,7 @@ public class YamlConfiguration extends FileConfiguration {
         try {
             config.load(reader);
         } catch (IOException | InvalidConfigurationException ex) {
-            Nukkit.getLogger().log(Level.FATAL, "Cannot load configuration from stream", ex);
+            Nukkit.getLogger().log(Level.ERROR, "Cannot load configuration from stream", ex);
         }
 
         return config;

@@ -1,11 +1,15 @@
 package io.nukkit;
 
+import io.nukkit.command.CommandException;
+import io.nukkit.command.CommandSender;
+import io.nukkit.entity.Player;
+import io.nukkit.plugin.PluginManager;
 import io.nukkit.scheduler.Scheduler;
+import io.nukkit.util.ChatColor;
 import io.nukkit.util.Versioning;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -16,6 +20,7 @@ import org.fusesource.jansi.AnsiConsole;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,10 +33,11 @@ public class Nukkit {
     public static boolean useConsole = true;
 
     public final static String VERSION = Versioning.getNukkitVersion();
-    public final static int API_VERSION = 2;
+    public final static String VERSION_UNKNOWN = "2.0dev";
     public final static String CODENAME = "Brynhildr";
     public final static String MINECRAFT_VERSION = "v0.15.0 alpha";
     public final static String MINECRAFT_VERSION_NETWORK = "0.15.0";
+    public final static int API_VERSION = 2;
 
     private static Server server;
 
@@ -45,8 +51,7 @@ public class Nukkit {
         }
 
         Nukkit.server = server;
-        server.getLogger().info("This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getNukkitVersion() + ")");
-
+        server.getLogger().info("This server is running " + getName() + " version " + getNukkitVersion() + " (Implementing API \"" + ChatColor.AQUA + CODENAME + ChatColor.WHITE + "\" version " + API_VERSION + ")");
     }
 
     /**
@@ -70,13 +75,36 @@ public class Nukkit {
         return server.getNukkitVersion();
     }
 
+    /**
+     * @see Server#getOnlinePlayers()
+     */
+    public static Collection<? extends Player> getOnlinePlayers() {
+        return server.getOnlinePlayers();
+    }
+
+    /**
+     * @see Server#getPluginManager()
+     */
+    public static PluginManager getPluginManager() {
+        return server.getPluginManager();
+    }
+
+    /**
+     * @see Server#getScheduler()
+     */
     public static Scheduler getScheduler() {
-        return null;
-        //TODO: IMPLEMENT THIS
+        return server.getScheduler();
     }
 
     public static Logger getLogger() {
         return server.getLogger();
+    }
+
+    /**
+     * @see Server#dispatchCommand(CommandSender sender, String commandLine)
+     */
+    public static boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
+        return server.dispatchCommand(sender, commandLine);
     }
 
     public static void main(String[] args) {
@@ -87,13 +115,15 @@ public class Nukkit {
 
                 //TODO: SERVER CONFIGURATION ARGUMENTS
 
+                acceptsAll(asList("n", "nukkit-settings"), "File for nukkit settings").withRequiredArg().ofType(File.class).defaultsTo(new File("nukkit.yml"), new File[0]).describedAs("Yml file");
+
                 acceptsAll(asList("nojline"), "Disables jline and emulates the vanilla console");
 
                 acceptsAll(asList("noconsole"), "Disables the console");
 
                 acceptsAll(asList("v", "version"), "Show the version of Nukkit");
 
-                acceptsAll(asList("d", "debug"), "Show the debug logs");
+                acceptsAll(asList("debug"), "Show the debug logs");
             }
         };
 
@@ -102,14 +132,14 @@ public class Nukkit {
         try {
             optionSet = parser.parse(args);
         } catch (OptionException e) {
-            LogManager.getLogger(Nukkit.class.getName()).log(Level.FATAL, e.getLocalizedMessage());
+            LogManager.getLogger(Nukkit.class.getName()).fatal(e.getLocalizedMessage());
         }
 
         if (optionSet == null || optionSet.has("?")) {
             try {
                 parser.printHelpOn(System.out);
             } catch (IOException e) {
-                LogManager.getLogger(Nukkit.class.getName()).log(Level.FATAL, (String) null, e);
+                LogManager.getLogger(Nukkit.class.getName()).fatal((String) null, e);
             }
         } else if (optionSet.has("v")) {
             System.out.println(Server.class.getPackage().getImplementationVersion());
@@ -148,7 +178,7 @@ public class Nukkit {
                     LoggerContext context = (LoggerContext) LogManager.getContext(false);
                     Configuration config = context.getConfiguration();
                     LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-                    loggerConfig.setLevel(Level.DEBUG);
+                    loggerConfig.setLevel(org.apache.logging.log4j.Level.DEBUG);
                     context.updateLoggers();
                 }
 

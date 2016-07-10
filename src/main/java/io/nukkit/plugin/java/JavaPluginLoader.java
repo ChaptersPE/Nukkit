@@ -13,6 +13,7 @@ import io.nukkit.plugin.*;
 import io.nukkit.util.Warning;
 import io.nukkit.util.Warning.WarningState;
 import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.Level;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
@@ -68,7 +68,7 @@ public final class JavaPluginLoader implements PluginLoader {
         if (dataFolder.equals(oldDataFolder)) {
             // They are equal -- nothing needs to be done!
         } else if (dataFolder.isDirectory() && oldDataFolder.isDirectory()) {
-            server.getLogger().warning(String.format(
+            server.getLogger().log(Level.WARN, String.format(
                     "While loading %s (%s) found old-data folder: `%s' next to the new one `%s'",
                     description.getFullName(),
                     file,
@@ -221,7 +221,7 @@ public final class JavaPluginLoader implements PluginLoader {
             Collections.addAll(methods, publicMethods);
             Collections.addAll(methods, listener.getClass().getDeclaredMethods());
         } catch (NoClassDefFoundError e) {
-            plugin.getLogger().severe("Plugin " + plugin.getDescription().getFullName() + " has failed to register events for " + listener.getClass() + " because " + e.getMessage() + " does not exist.");
+            plugin.getLogger().log(Level.ERROR, "Plugin " + plugin.getDescription().getFullName() + " has failed to register events for " + listener.getClass() + " because " + e.getMessage() + " does not exist.");
             return ret;
         }
 
@@ -230,7 +230,7 @@ public final class JavaPluginLoader implements PluginLoader {
             if (eh == null) continue;
             final Class<?> checkClass;
             if (method.getParameterTypes().length != 1 || !Event.class.isAssignableFrom(checkClass = method.getParameterTypes()[0])) {
-                plugin.getLogger().severe(plugin.getDescription().getFullName() + " attempted to register an invalid EventHandler method signature \"" + method.toGenericString() + "\" in " + listener.getClass());
+                plugin.getLogger().log(Level.ERROR, plugin.getDescription().getFullName() + " attempted to register an invalid EventHandler method signature \"" + method.toGenericString() + "\" in " + listener.getClass());
                 continue;
             }
             final Class<? extends Event> eventClass = checkClass.asSubclass(Event.class);
@@ -250,7 +250,7 @@ public final class JavaPluginLoader implements PluginLoader {
                         break;
                     }
                     plugin.getLogger().log(
-                            Level.WARNING,
+                            Level.WARN,
                             String.format(
                                     "\"%s\" has registered a listener for %s on method \"%s\", but the event is Deprecated." +
                                             " \"%s\"; please notify the authors %s.",
@@ -304,7 +304,7 @@ public final class JavaPluginLoader implements PluginLoader {
             try {
                 jPlugin.setEnabled(true);
             } catch (Throwable ex) {
-                server.getLogger().log(Level.SEVERE, "Error occurred while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+                server.getLogger().log(Level.ERROR, "Error occurred while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
 
             // Perhaps abort here, rather than continue going, but as it stands,
@@ -328,7 +328,7 @@ public final class JavaPluginLoader implements PluginLoader {
             try {
                 jPlugin.setEnabled(false);
             } catch (Throwable ex) {
-                server.getLogger().log(Level.SEVERE, "Error occurred while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+                server.getLogger().log(Level.ERROR, "Error occurred while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
 
             loaders.remove(jPlugin.getDescription().getName());

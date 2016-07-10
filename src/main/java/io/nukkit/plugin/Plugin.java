@@ -5,10 +5,10 @@ import io.nukkit.Server;
 import io.nukkit.command.TabExecutor;
 import io.nukkit.configuration.file.FileConfiguration;
 import io.nukkit.generator.ChunkGenerator;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
 /**
  * Represents a Plugin

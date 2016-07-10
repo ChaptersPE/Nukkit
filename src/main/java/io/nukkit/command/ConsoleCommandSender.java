@@ -1,6 +1,6 @@
 package io.nukkit.command;
 
-import org.bukkit.conversations.Conversable;
+import io.nukkit.conversations.Conversable;
 
 public interface ConsoleCommandSender extends CommandSender, Conversable {
 }

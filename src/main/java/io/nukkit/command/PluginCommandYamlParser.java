@@ -1,7 +1,8 @@
 package io.nukkit.command;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
+import io.nukkit.Nukkit;
+import io.nukkit.plugin.Plugin;
+import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PluginCommandYamlParser {
 
         for (Entry<String, Map<String, Object>> entry : map.entrySet()) {
             if (entry.getKey().contains(":")) {
-                Bukkit.getServer().getLogger().severe("Could not load command " + entry.getKey() + " for plugin " + plugin.getName() + ": Illegal Characters");
+                Nukkit.getServer().getLogger().log(Level.ERROR, "Could not load command " + entry.getKey() + " for plugin " + plugin.getName() + ": Illegal Characters");
                 continue;
             }
             Command newCmd = new PluginCommand(entry.getKey(), plugin);
@@ -45,14 +46,14 @@ public class PluginCommandYamlParser {
                 if (aliases instanceof List) {
                     for (Object o : (List<?>) aliases) {
                         if (o.toString().contains(":")) {
-                            Bukkit.getServer().getLogger().severe("Could not load alias " + o.toString() + " for plugin " + plugin.getName() + ": Illegal Characters");
+                            Nukkit.getServer().getLogger().log(Level.ERROR, "Could not load alias " + o.toString() + " for plugin " + plugin.getName() + ": Illegal Characters");
                             continue;
                         }
                         aliasList.add(o.toString());
                     }
                 } else {
                     if (aliases.toString().contains(":")) {
-                        Bukkit.getServer().getLogger().severe("Could not load alias " + aliases.toString() + " for plugin " + plugin.getName() + ": Illegal Characters");
+                        Nukkit.getServer().getLogger().log(Level.ERROR, "Could not load alias " + aliases.toString() + " for plugin " + plugin.getName() + ": Illegal Characters");
                     } else {
                         aliasList.add(aliases.toString());
                     }

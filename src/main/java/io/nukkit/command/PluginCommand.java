@@ -1,7 +1,7 @@
 package io.nukkit.command;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.plugin.Plugin;
+import io.nukkit.plugin.Plugin;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 

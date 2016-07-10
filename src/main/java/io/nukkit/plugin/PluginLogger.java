@@ -1,8 +1,11 @@
 package io.nukkit.plugin;
 
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.message.Message;
+
 
 /**
  * The PluginLogger class is a modified {@link Logger} that prepends all
@@ -13,6 +16,7 @@ import java.util.logging.Logger;
  */
 public class PluginLogger extends Logger {
     private String pluginName;
+    private org.apache.logging.log4j.Logger parent;
 
     /**
      * Creates a new PluginLogger that extracts the name from a plugin.
@@ -20,17 +24,15 @@ public class PluginLogger extends Logger {
      * @param context A reference to the plugin
      */
     public PluginLogger(Plugin context) {
-        super(context.getClass().getCanonicalName(), null);
+        super(new LoggerContext(context.getClass().getCanonicalName()), context.getClass().getCanonicalName(), context.getServer().getLogger().getMessageFactory());
         String prefix = context.getDescription().getPrefix();
         pluginName = prefix != null ? "[" + prefix + "] " : "[" + context.getDescription().getName() + "] ";
-        setParent(context.getServer().getLogger());
+        parent = context.getServer().getLogger();
         setLevel(Level.ALL);
     }
 
     @Override
-    public void log(LogRecord logRecord) {
-        logRecord.setMessage(pluginName + logRecord.getMessage());
-        super.log(logRecord);
+    public void logMessage(String fqcn, org.apache.logging.log4j.Level level, Marker marker, Message message, Throwable t) {
+        parent.log(level, marker, pluginName + message.getFormattedMessage(), t);
     }
-
 }
