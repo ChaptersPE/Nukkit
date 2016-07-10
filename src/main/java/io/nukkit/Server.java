@@ -10,7 +10,6 @@ import io.nukkit.configuration.file.YamlConfiguration;
 import io.nukkit.entity.Player;
 import io.nukkit.plugin.PluginManager;
 import io.nukkit.plugin.ServicesManager;
-import io.nukkit.plugin.TestPluginLogger;
 import io.nukkit.plugin.messaging.Messenger;
 import io.nukkit.scheduler.Scheduler;
 import io.nukkit.util.*;
@@ -110,9 +109,6 @@ public class Server implements Runnable {
         Logger rootLogger = LogManager.getRootLogger();
         System.setOut(new PrintStream(new LoggerOutputStream(rootLogger, org.apache.logging.log4j.Level.INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(rootLogger, org.apache.logging.log4j.Level.WARN), true));
-
-        TestPluginLogger logger = new TestPluginLogger("Brynhildr");
-        logger.info("Plugin logger test" + ChatColor.YELLOW + " Color test");
 
         this.serverThread = new Thread(this, "Server Thread");
         this.serverThread.start();
