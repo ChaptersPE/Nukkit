@@ -3,9 +3,11 @@ package io.nukkit;
 import io.nukkit.command.CommandException;
 import io.nukkit.command.CommandSender;
 import io.nukkit.entity.Player;
+import io.nukkit.enumerations.ChatColor;
+import io.nukkit.item.ItemFactory;
+import io.nukkit.item.meta.ItemMeta;
 import io.nukkit.plugin.PluginManager;
 import io.nukkit.scheduler.Scheduler;
-import io.nukkit.util.ChatColor;
 import io.nukkit.util.Versioning;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
@@ -98,6 +100,16 @@ public class Nukkit {
         return server.getScheduler();
     }
 
+    /**
+     * Gets the instance of the item factory (for {@link ItemMeta}).
+     *
+     * @return the item factory
+     * @see ItemFactory
+     */
+    public static ItemFactory getItemFactory() {
+        return server.getItemFactory();
+    }
+
     public static Logger getLogger() {
         return server.getLogger();
     }
@@ -108,6 +120,15 @@ public class Nukkit {
     public static boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
         return server.dispatchCommand(sender, commandLine);
     }
+
+    /**
+     * @see Server#getPlayerExact(String name)
+     */
+    @Deprecated
+    public static Player getPlayerExact(String name) {
+        return server.getPlayerExact(name);
+    }
+
 
     public static void main(String[] args) {
 

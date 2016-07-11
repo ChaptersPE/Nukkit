@@ -1,6 +1,8 @@
-package io.nukkit.util;
+package io.nukkit.enumerations;
 
 import com.google.common.collect.ImmutableMap;
+import io.nukkit.material.Material;
+import io.nukkit.util.Color;
 
 import java.util.Map;
 

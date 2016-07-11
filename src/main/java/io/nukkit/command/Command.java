@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableList;
 import io.nukkit.Nukkit;
 import io.nukkit.Server;
 import io.nukkit.entity.Player;
+import io.nukkit.enumerations.ChatColor;
 import io.nukkit.permissions.Permissible;
 import io.nukkit.plugin.PluginDescriptionFile;
-import io.nukkit.util.ChatColor;
 import io.nukkit.util.StringUtil;
 import org.apache.commons.lang.Validate;
 

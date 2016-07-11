@@ -8,6 +8,7 @@ import io.nukkit.command.CommandSender;
 import io.nukkit.command.PluginCommand;
 import io.nukkit.configuration.file.YamlConfiguration;
 import io.nukkit.entity.Player;
+import io.nukkit.item.ItemFactory;
 import io.nukkit.plugin.PluginManager;
 import io.nukkit.plugin.ServicesManager;
 import io.nukkit.plugin.messaging.Messenger;
@@ -23,10 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * author: MagicDroidX
@@ -203,14 +201,54 @@ public class Server implements Runnable {
         //TODO
     }
 
+    /**
+     * Gets the player with the given UUID.
+     *
+     * @param id UUID of the player to retrieve
+     * @return a player object if one was found, null otherwise
+     */
+    public Player getPlayer(UUID id) {
+        return null;
+        //todo
+    }
+
+    /**
+     * Gets a player object by the given username.
+     * <p>
+     * This method may not return objects for offline players.
+     *
+     * @param name the name to look up
+     * @return a player if one was found, null otherwise
+     * @deprecated Use {@link #getPlayer(UUID)} as player names are no longer
+     * guaranteed to be unique
+     */
+    @Deprecated
     public Player getPlayer(String name) {
         //TODO
+        return null;
+    }
+
+    /**
+     * Gets the player with the exact given name, case insensitive.
+     *
+     * @param name Exact name of the player to retrieve
+     * @return a player object if one was found, null otherwise
+     * @deprecated Use {@link #getPlayer(UUID)} as player names are no longer
+     * guaranteed to be unique
+     */
+    @Deprecated
+    public Player getPlayerExact(String name) {
         return null;
     }
 
     public Warning.WarningState getWarningState() {
         return Warning.WarningState.DEFAULT;
         //TODO
+    }
+
+    public ItemFactory getItemFactory() {
+        return null;
+        // TODO
     }
 
     public int broadcast(String message, String permission) {

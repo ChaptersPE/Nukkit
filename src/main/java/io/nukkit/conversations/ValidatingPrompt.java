@@ -1,6 +1,6 @@
 package io.nukkit.conversations;
 
-import io.nukkit.util.ChatColor;
+import io.nukkit.enumerations.ChatColor;
 
 /**
  * ValidatingPrompt is the base class for any prompt that requires validation.

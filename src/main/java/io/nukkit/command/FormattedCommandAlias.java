@@ -1,7 +1,7 @@
 package io.nukkit.command;
 
 import io.nukkit.Nukkit;
-import io.nukkit.util.ChatColor;
+import io.nukkit.enumerations.ChatColor;
 
 import java.util.ArrayList;
 

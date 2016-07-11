@@ -1,7 +1,7 @@
 package io.nukkit.conversations;
 
+import io.nukkit.enumerations.ChatColor;
 import io.nukkit.plugin.Plugin;
-import io.nukkit.util.ChatColor;
 
 /**
  * PluginNameConversationPrefix is a {@link ConversationPrefix} implementation

@@ -1,4 +1,4 @@
-package io.nukkit.util;
+package io.nukkit.enumerations;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +95,7 @@ public enum ChatColor {
     /**
      * Resets all previous chat colors or formats.
      */
-    RESET('r', 0x15);
+    RESET('r', 0x15),;
 
     /**
      * The special character which prefixes all chat colour codes. Use this if
