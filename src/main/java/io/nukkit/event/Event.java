@@ -1,5 +1,6 @@
 package io.nukkit.event;
 
+import io.nukkit.plugin.Plugin;
 import io.nukkit.plugin.PluginManager;
 
 /**

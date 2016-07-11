@@ -5,7 +5,7 @@ import com.google.common.io.Files;
 import io.nukkit.configuration.Configuration;
 import io.nukkit.configuration.InvalidConfigurationException;
 import io.nukkit.configuration.MemoryConfiguration;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.*;

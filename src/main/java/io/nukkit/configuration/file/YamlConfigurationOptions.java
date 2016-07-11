@@ -1,6 +1,6 @@
 package io.nukkit.configuration.file;
 
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 
 /**
  * Various settings for controlling the input and output of a {@link

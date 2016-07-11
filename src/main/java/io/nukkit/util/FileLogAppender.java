@@ -38,7 +38,7 @@ public final class FileLogAppender extends AbstractOutputStreamAppender<RollingF
     private FileLogAppender(String name, Layout<? extends Serializable> layout, Filter filter, RollingFileManager manager, String fileName, String filePattern, boolean ignoreExceptions, boolean immediateFlush, int bufferSize, Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
-            HashMap configuration = new HashMap(layout.getContentFormat());
+            HashMap<String, String> configuration = new HashMap<>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
             this.advertisement = advertiser.advertise(configuration);
@@ -77,8 +77,8 @@ public final class FileLogAppender extends AbstractOutputStreamAppender<RollingF
                 layout = PatternLayout.createDefaultLayout();
             }
 
-            RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, (Layout) layout);
-            return manager == null ? null : new FileLogAppender(name, (Layout) layout, filter, manager, fileName, filePattern, ignoreExceptions, isFlush, bufferSize, isAdvertise ? config.getAdvertiser() : null);
+            RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(fileName, filePattern, isAppend, isFlush, bufferSize, policy, strategy, advertiseURI, layout);
+            return manager == null ? null : new FileLogAppender(name, layout, filter, manager, fileName, filePattern, ignoreExceptions, isFlush, bufferSize, isAdvertise ? config.getAdvertiser() : null);
         }
     }
 

@@ -8,7 +8,7 @@ import io.nukkit.permissions.Permissible;
 import io.nukkit.plugin.PluginDescriptionFile;
 import io.nukkit.util.ChatColor;
 import io.nukkit.util.StringUtil;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
 import java.util.Collections;

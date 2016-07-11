@@ -1,6 +1,6 @@
 package io.nukkit.configuration;
 
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 
 import java.util.Map;
 

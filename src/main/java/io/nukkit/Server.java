@@ -16,7 +16,7 @@ import io.nukkit.util.*;
 import jline.UnsupportedTerminal;
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +39,7 @@ public class Server implements Runnable {
      * <p>
      * For use in {@link #broadcast(java.lang.String, java.lang.String)}.
      */
-    public static final String BROADCAST_CHANNEL_ADMINISTRATIVE = "bukkit.broadcast.admin";
+    public static final String BROADCAST_CHANNEL_ADMINISTRATIVE = "nukkit.broadcast.admin";
 
     /**
      * Used for all announcement messages, such as informing users that a
@@ -47,10 +47,10 @@ public class Server implements Runnable {
      * <p>
      * For use in {@link #broadcast(java.lang.String, java.lang.String)}.
      */
-    public static final String BROADCAST_CHANNEL_USERS = "bukkit.broadcast.user";
+    public static final String BROADCAST_CHANNEL_USERS = "nukkit.broadcast.user";
 
     private final String nukkitVersion = Versioning.getNukkitVersion();
-    private final Logger logger = LogManager.getLogger("Minecraft");
+    private final Logger logger = LogManager.getLogger("Nukkit");
     private YamlConfiguration configuration;
 
     public OptionSet options;

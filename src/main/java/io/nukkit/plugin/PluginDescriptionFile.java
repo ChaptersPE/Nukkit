@@ -3,8 +3,7 @@ package io.nukkit.plugin;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.nukkit.command.CommandExecutor;
-import io.nukkit.command.PluginCommand;
+import io.nukkit.command.*;
 import io.nukkit.permissions.Permissible;
 import io.nukkit.permissions.Permission;
 import io.nukkit.permissions.PermissionDefault;
@@ -119,53 +118,35 @@ import java.util.*;
  * </table>
  * <p>
  * A plugin.yml example:<blockquote><pre>
- * name: Inferno
- * version: 1.4.1
- * description: This plugin is so 31337. You can set yourself on fire.
+ * name: ExamplePlugin
+ * version: 1.0.0
+ * description: Example plugin showing the API
  * # We could place every author in the authors list, but chose not to for illustrative purposes
  * # Also, having an author distinguishes that person as the project lead, and ensures their
  * # name is displayed first
- * author: CaptainInflamo
- * authors: [Cogito, verrier, EvilSeph]
- * website: http://www.curse.com/server-mods/minecraft/myplugin
+ * author: Nukkit Project
+ * authors: [MagicDroidX, Nukkit]
+ * website: https://github.com/Nukkit/ExamplePlugin
  * <p>
- * main: com.captaininflamo.nukkiy.inferno.Inferno
+ * main: ExamplePlugin.MainClass
  * database: false
- * depend: [NewFire, FlameWire]
+ * depend: []
  * <p>
  * commands:
- *  flagrate:
- *    description: Set yourself on fire.
- *    aliases: [combust_me, combustMe]
- *    permission: inferno.flagrate
- *    usage: Syntax error! Simply type /&lt;command&gt; to ignite yourself.
- *  burningdeaths:
- *    description: List how many times you have died by fire.
- *    aliases: [burning_deaths, burningDeaths]
- *    permission: inferno.burningdeaths
- *    usage: |
- *      /&lt;command&gt; [player]
- *      Example: /&lt;command&gt; - see how many times you have burned to death
- *      Example: /&lt;command&gt; CaptainIce - see how many times CaptainIce has burned to death
+ *  example:
+ *    description: Example command
+ *    aliases: [e, ex]
+ *    permission: exampleplugin.command.example
+ *    usage: /example
  * <p>
  * permissions:
- *  inferno.*:
- *    description: Gives access to all Inferno commands
+ *  exampleplugin.command.*:
+ *    description: Gives access to all commands
  *    children:
- *      inferno.flagrate: true
- *      inferno.burningdeaths: true
- *      inferno.burningdeaths.others: true
- *  inferno.flagrate:
- *    description: Allows you to ignite yourself
+ *      exampleplugin.command.example: true
+ *  exampleplugin.command.example:
+ *    description: Allows the user to run the example command
  *    default: true
- *  inferno.burningdeaths:
- *    description: Allows you to see how many times you have burned to death
- *    default: true
- *  inferno.burningdeaths.others:
- *    description: Allows you to see how many times others have burned to death
- *    default: op
- *    children:
- *      inferno.burningdeaths: true
  * </pre></blockquote>
  */
 public final class PluginDescriptionFile {

@@ -2,7 +2,7 @@ package io.nukkit.permissions;
 
 import io.nukkit.Nukkit;
 import io.nukkit.plugin.PluginManager;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 import org.apache.logging.log4j.Level;
 
 import java.util.*;

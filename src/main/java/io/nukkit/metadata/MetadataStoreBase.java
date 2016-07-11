@@ -1,7 +1,7 @@
 package io.nukkit.metadata;
 
 import io.nukkit.plugin.Plugin;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 
 import java.util.*;
 

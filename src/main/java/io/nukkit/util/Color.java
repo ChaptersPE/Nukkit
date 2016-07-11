@@ -3,7 +3,7 @@ package io.nukkit.util;
 import com.google.common.collect.ImmutableMap;
 import io.nukkit.configuration.serialization.ConfigurationSerializable;
 import io.nukkit.configuration.serialization.SerializableAs;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 
 import java.util.Map;
 

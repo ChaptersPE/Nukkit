@@ -52,7 +52,7 @@ class AsyncTask extends Task {
             super.run();
         } catch (Throwable e) {
             throwable = e;
-            throw new UnhandledException(String.format("Plugin %s generated an exception while executing task %s", this.getOwner().getDescription().getFullName(), Integer.valueOf(this.getTaskId())), e);
+            throw new UnhandledException(String.format("Plugin %s generated an exception while executing task %s", this.getOwner().getDescription().getFullName(), this.getTaskId()), e);
         } finally {
             synchronized (this.workers) {
                 try {

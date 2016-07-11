@@ -1,6 +1,6 @@
 package io.nukkit.conversations;
 
-import  org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;

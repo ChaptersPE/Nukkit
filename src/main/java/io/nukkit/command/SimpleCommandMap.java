@@ -4,7 +4,7 @@ import io.nukkit.Server;
 import io.nukkit.command.defaults.VanillaCommand;
 import io.nukkit.entity.Player;
 import io.nukkit.util.StringUtil;
-import  org.apache.commons.lang.Validate;
+import org.apache.commons.lang.Validate;
 import org.apache.logging.log4j.Level;
 
 import java.util.*;
@@ -23,55 +23,55 @@ public class SimpleCommandMap implements CommandMap {
 
     private void setDefaultCommands() {
         //TODO
-        /*register("bukkit", new SaveCommand());
-        register("bukkit", new SaveOnCommand());
-        register("bukkit", new SaveOffCommand());
-        register("bukkit", new StopCommand());
-        register("bukkit", new VersionCommand("version"));
-        register("bukkit", new ReloadCommand("reload"));
-        register("bukkit", new PluginsCommand("plugins"));
-        register("bukkit", new TimingsCommand("timings"));*/
+        /*register("nukkit", new SaveCommand());
+        register("nukkit", new SaveOnCommand());
+        register("nukkit", new SaveOffCommand());
+        register("nukkit", new StopCommand());
+        register("nukkit", new VersionCommand("version"));
+        register("nukkit", new ReloadCommand("reload"));
+        register("nukkit", new PluginsCommand("plugins"));
+        register("nukkit", new TimingsCommand("timings"));*/
     }
 
     public void setFallbackCommands() {
         //TODO
-        /*register("bukkit", new ListCommand());
-        register("bukkit", new OpCommand());
-        register("bukkit", new DeopCommand());
-        register("bukkit", new BanIpCommand());
-        register("bukkit", new PardonIpCommand());
-        register("bukkit", new BanCommand());
-        register("bukkit", new PardonCommand());
-        register("bukkit", new KickCommand());
-        register("bukkit", new TeleportCommand());
-        register("bukkit", new GiveCommand());
-        register("bukkit", new TimeCommand());
-        register("bukkit", new SayCommand());
-        register("bukkit", new WhitelistCommand());
-        register("bukkit", new TellCommand());
-        register("bukkit", new MeCommand());
-        register("bukkit", new KillCommand());
-        register("bukkit", new GameModeCommand());
-        register("bukkit", new HelpCommand());
-        register("bukkit", new ExpCommand());
-        register("bukkit", new ToggleDownfallCommand());
-        register("bukkit", new BanListCommand());
-        register("bukkit", new DefaultGameModeCommand());
-        register("bukkit", new SeedCommand());
-        register("bukkit", new DifficultyCommand());
-        register("bukkit", new WeatherCommand());
-        register("bukkit", new SpawnpointCommand());
-        register("bukkit", new ClearCommand());
-        register("bukkit", new GameRuleCommand());
-        register("bukkit", new EnchantCommand());
-        register("bukkit", new TestForCommand());
-        register("bukkit", new EffectCommand());
-        register("bukkit", new ScoreboardCommand());
-        register("bukkit", new PlaySoundCommand());
-        register("bukkit", new SpreadPlayersCommand());
-        register("bukkit", new SetWorldSpawnCommand());
-        register("bukkit", new SetIdleTimeoutCommand());
-        register("bukkit", new AchievementCommand());*/
+        /*register("nukkit", new ListCommand());
+        register("nukkit", new OpCommand());
+        register("nukkit", new DeopCommand());
+        register("nukkit", new BanIpCommand());
+        register("nukkit", new PardonIpCommand());
+        register("nukkit", new BanCommand());
+        register("nukkit", new PardonCommand());
+        register("nukkit", new KickCommand());
+        register("nukkit", new TeleportCommand());
+        register("nukkit", new GiveCommand());
+        register("nukkit", new TimeCommand());
+        register("nukkit", new SayCommand());
+        register("nukkit", new WhitelistCommand());
+        register("nukkit", new TellCommand());
+        register("nukkit", new MeCommand());
+        register("nukkit", new KillCommand());
+        register("nukkit", new GameModeCommand());
+        register("nukkit", new HelpCommand());
+        register("nukkit", new ExpCommand());
+        register("nukkit", new ToggleDownfallCommand());
+        register("nukkit", new BanListCommand());
+        register("nukkit", new DefaultGameModeCommand());
+        register("nukkit", new SeedCommand());
+        register("nukkit", new DifficultyCommand());
+        register("nukkit", new WeatherCommand());
+        register("nukkit", new SpawnpointCommand());
+        register("nukkit", new ClearCommand());
+        register("nukkit", new GameRuleCommand());
+        register("nukkit", new EnchantCommand());
+        register("nukkit", new TestForCommand());
+        register("nukkit", new EffectCommand());
+        register("nukkit", new ScoreboardCommand());
+        register("nukkit", new PlaySoundCommand());
+        register("nukkit", new SpreadPlayersCommand());
+        register("nukkit", new SetWorldSpawnCommand());
+        register("nukkit", new SetIdleTimeoutCommand());
+        register("nukkit", new AchievementCommand());*/
     }
 
     /**

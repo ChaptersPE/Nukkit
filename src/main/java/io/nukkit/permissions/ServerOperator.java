@@ -1,5 +1,7 @@
 package io.nukkit.permissions;
 
+import io.nukkit.entity.Player;
+
 /**
  * Represents an object that may become a server operator, such as a {@link
  * Player}
