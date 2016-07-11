@@ -1,6 +1,6 @@
 package io.nukkit.conversations;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import  org.apache.commons.lang.math.NumberUtils;
 
 /**
  * NumericPrompt is the base class for any prompt that requires a {@link

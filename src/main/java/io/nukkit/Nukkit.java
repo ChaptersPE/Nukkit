@@ -10,6 +10,7 @@ import io.nukkit.util.Versioning;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,6 +32,7 @@ public class Nukkit {
 
     public static boolean useJline = true;
     public static boolean useConsole = true;
+    public static boolean ANSI = true;
 
     public final static String VERSION = Versioning.getNukkitVersion();
     public final static String VERSION_UNKNOWN = "2.0dev";
@@ -117,7 +119,9 @@ public class Nukkit {
 
                 acceptsAll(asList("n", "nukkit-settings"), "File for nukkit settings").withRequiredArg().ofType(File.class).defaultsTo(new File("nukkit.yml"), new File[0]).describedAs("Yml file");
 
-                acceptsAll(asList("nojline"), "Disables jline and emulates the vanilla console");
+                acceptsAll(asList("nojline", "disable-jline"), "Disables jline and emulates the vanilla console");
+
+                acceptsAll(asList("noansi", "disable-ansi"), "Disables jline and emulates the vanilla console");
 
                 acceptsAll(asList("noconsole"), "Disables the console");
 
@@ -159,15 +163,20 @@ public class Nukkit {
                 useJline = !(jline_UnsupportedTerminal).equals(System.getProperty(jline_terminal));
 
                 if (optionSet.has("nojline")) {
-                    System.setProperty("user.language", "en");
                     useJline = false;
                 }
 
-                if (useJline) {
-                    AnsiConsole.systemInstall();
-                } else {
+                if (optionSet.has("noansi")) {
+                    ANSI = false;
+                }
+
+                if (!useJline) {
                     // This ensures the terminal literal will always match the jline implementation
                     System.setProperty(jline.TerminalFactory.JLINE_TERMINAL, jline.UnsupportedTerminal.class.getName());
+                }
+
+                if (ANSI) {
+                    AnsiConsole.systemInstall();
                 }
 
                 if (optionSet.has("noconsole")) {
@@ -178,7 +187,7 @@ public class Nukkit {
                     LoggerContext context = (LoggerContext) LogManager.getContext(false);
                     Configuration config = context.getConfiguration();
                     LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-                    loggerConfig.setLevel(org.apache.logging.log4j.Level.DEBUG);
+                    loggerConfig.setLevel(Level.DEBUG);
                     context.updateLoggers();
                 }
 

@@ -16,7 +16,7 @@ import io.nukkit.util.*;
 import jline.UnsupportedTerminal;
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
-import org.apache.commons.lang3.Validate;
+import  org.apache.commons.lang.Validate;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,8 +107,8 @@ public class Server implements Runnable {
         (new ConsoleWriter(System.out, this.reader)).start();
 
         Logger rootLogger = LogManager.getRootLogger();
-        System.setOut(new PrintStream(new LoggerOutputStream(rootLogger, org.apache.logging.log4j.Level.INFO), true));
-        System.setErr(new PrintStream(new LoggerOutputStream(rootLogger, org.apache.logging.log4j.Level.WARN), true));
+        System.setOut(new PrintStream(new LoggerOutputStream(rootLogger, Level.INFO), true));
+        System.setErr(new PrintStream(new LoggerOutputStream(rootLogger, Level.WARN), true));
 
         this.serverThread = new Thread(this, "Server Thread");
         this.serverThread.start();

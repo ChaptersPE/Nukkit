@@ -12,7 +12,7 @@ import io.nukkit.event.server.PluginEnableEvent;
 import io.nukkit.plugin.*;
 import io.nukkit.util.Warning;
 import io.nukkit.util.Warning.WarningState;
-import org.apache.commons.lang3.Validate;
+import  org.apache.commons.lang.Validate;
 import org.apache.logging.log4j.Level;
 import org.yaml.snakeyaml.error.YAMLException;
 

@@ -32,7 +32,7 @@ public class PluginLogger extends Logger {
     }
 
     @Override
-    public void logMessage(String fqcn, org.apache.logging.log4j.Level level, Marker marker, Message message, Throwable t) {
+    public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
         parent.log(level, marker, pluginName + message.getFormattedMessage(), t);
     }
 }

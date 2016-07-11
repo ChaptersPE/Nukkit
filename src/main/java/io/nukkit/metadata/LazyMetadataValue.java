@@ -1,7 +1,7 @@
 package io.nukkit.metadata;
 
 import io.nukkit.plugin.Plugin;
-import org.apache.commons.lang3.Validate;
+import  org.apache.commons.lang.Validate;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.Callable;

@@ -2,7 +2,7 @@ package io.nukkit.plugin.java;
 
 import io.nukkit.plugin.InvalidPluginException;
 import io.nukkit.plugin.PluginDescriptionFile;
-import org.apache.commons.lang3.Validate;
+import  org.apache.commons.lang.Validate;
 
 import java.io.File;
 import java.net.MalformedURLException;

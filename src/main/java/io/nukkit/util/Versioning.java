@@ -17,8 +17,8 @@ public final class Versioning {
             try {
                 properties.load(stream);
                 result = properties.getProperty("version");
-            } catch (IOException var4) {
-                Logger.getLogger(Versioning.class.getName()).log(Level.SEVERE, "Could not get Nukkit version!", var4);
+            } catch (IOException e) {
+                Logger.getLogger(Versioning.class.getName()).log(Level.SEVERE, "Could not get Nukkit version!", e);
             }
         }
 

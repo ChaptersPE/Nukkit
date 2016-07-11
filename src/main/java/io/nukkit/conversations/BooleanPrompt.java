@@ -1,7 +1,7 @@
 package io.nukkit.conversations;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.BooleanUtils;
+import  org.apache.commons.lang.ArrayUtils;
+import  org.apache.commons.lang.BooleanUtils;
 
 /**
  * BooleanPrompt is the base class for any prompt that requires a boolean

@@ -62,7 +62,8 @@ public class ConsoleWriter extends Thread {
         while (true) {
             String message = ConsoleLogAppender.getNextLogEvent("ConsoleLogger");
             if (message != null) {
-                if (reader.getTerminal().isAnsiSupported()) {
+                //if (reader.getTerminal().isAnsiSupported() || Nukkit.ANSI) {
+                if (Nukkit.ANSI) {
                     for (ChatColor color : colors) {
                         if (replacements.containsKey(color)) {
                             message = message.replaceAll("(?i)" + color.toString(), replacements.get(color));
@@ -83,25 +84,17 @@ public class ConsoleWriter extends Thread {
 
                         try {
                             this.reader.drawLine();
-                        } catch (Throwable var3) {
+                        } catch (Throwable e) {
                             this.reader.getCursorBuffer().clear();
                         }
 
                         this.reader.flush();
-                        /*this.buffer = this.reader.getCursorBuffer().copy();
-                        this.reader.getOutput().write("\u001b[1G\u001b[K");
-                        this.reader.flush();
-
-                        this.output.write(message.getBytes());
-                        this.output.flush();
-
-                        this.reader.resetPromptLine(this.reader.getPrompt(), this.buffer.toString(), this.buffer.cursor);*/
                     } else {
                         this.output.write(message.getBytes());
                         this.output.flush();
                     }
-                } catch (IOException var4) {
-                    LogManager.getLogger(ConsoleWriter.class.getName()).log(Level.FATAL, (String) null, var4);
+                } catch (IOException e) {
+                    LogManager.getLogger(ConsoleWriter.class.getName()).log(Level.FATAL, (String) null, e);
                 }
             }
         }

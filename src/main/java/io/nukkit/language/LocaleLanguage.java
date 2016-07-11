@@ -58,7 +58,7 @@ public class LocaleLanguage {
 
         try {
             return String.format(format, args);
-        } catch (IllegalFormatException var5) {
+        } catch (IllegalFormatException e) {
             return "Format error: " + format;
         }
     }

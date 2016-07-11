@@ -4,7 +4,7 @@ import io.nukkit.Server;
 import io.nukkit.command.defaults.VanillaCommand;
 import io.nukkit.entity.Player;
 import io.nukkit.util.StringUtil;
-import org.apache.commons.lang3.Validate;
+import  org.apache.commons.lang.Validate;
 import org.apache.logging.log4j.Level;
 
 import java.util.*;
