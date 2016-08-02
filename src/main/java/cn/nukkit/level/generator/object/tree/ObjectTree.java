@@ -121,8 +121,19 @@ public abstract class ObjectTree {
     }
 
     protected void placeTrunk(ChunkManager level, int x, int y, int z, NukkitRandom random, int trunkHeight) {
-        // The base dirt block
-        level.setBlockIdAt(x, y - 1, z, Block.DIRT);
+
+        if(
+            level.getBlockIdAt(x + 1, y -1, z) == Block.AIR ||
+            level.getBlockIdAt(x, y -1, z + 1) == Block.AIR ||
+            level.getBlockIdAt(x - 1, y -1, z) == Block.AIR ||
+            level.getBlockIdAt(x, y -1, z - 1) == Block.AIR
+            ) {
+            level.setBlockIdAt(x, y - 1, z, this.getTrunkBlock());
+            level.setBlockDataAt(x, y - 1, z, this.getType());
+        } else {
+            // The base dirt block
+            level.setBlockIdAt(x, y - 1, z, Block.DIRT);
+        }
 
         for (int yy = 0; yy < trunkHeight; ++yy) {
             int blockId = level.getBlockIdAt(x, y + yy, z);
