@@ -1451,7 +1451,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 if (this.isCreative() && !this.isInsideOfFire()) {
                     this.extinguish();
                 } else if (this.getLevel().isRaining()) {
-                    if (this.getLevel().canBlockSeeSky(this)) {
+                    if (this.getLevel().canBlockSeeSky(blockTemporalVector.setComponents((int)x, (int)y, (int)z))) {
                         this.extinguish();
                     }
                 }
@@ -2479,7 +2479,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     Item oldItem = item.clone();
 
-                    if (this.canInteract(vector.add(0.5, 0.5, 0.5), this.isCreative() ? 13 : 6) && (item = this.level.useBreakOn(vector, item, this, true)) != null) {
+                    if (this.canInteract(vector.add(0.5, 0.5, 0.5), this.isCreative() ? 13 : 6) && (item = this.level.useBreakOn(blockVector, item, this, true)) != null) {
                         if (this.isSurvival()) {
                             this.getFoodData().updateFoodExpLevel(0.025);
                             if (!item.deepEquals(oldItem) || item.getCount() != oldItem.getCount()) {
