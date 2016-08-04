@@ -50,7 +50,7 @@ public class BlockPumpkin extends BlockSolid {
                 this.meta = (player.getDirection() + 5) % 4;
             }
         }
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
         return true;
     }
 

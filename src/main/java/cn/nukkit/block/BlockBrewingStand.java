@@ -63,14 +63,14 @@ public class BlockBrewingStand extends BlockSolid {
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         if (!block.getSide(SIDE_DOWN).isTransparent()) {
-            getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
 
             CompoundTag nbt = new CompoundTag()
                     .putList(new ListTag<>("Items"))
                     .putString("id", BlockEntity.BREWING_STAND)
-                    .putInt("x", (int) this.x)
-                    .putInt("y", (int) this.y)
-                    .putInt("z", (int) this.z);
+                    .putInt("x", this.x)
+                    .putInt("y", this.y)
+                    .putInt("z", this.z);
 
             if (item.hasCustomName()) {
                 nbt.putString("CustomName", item.getCustomName());
@@ -85,7 +85,7 @@ public class BlockBrewingStand extends BlockSolid {
                 }
             }
 
-            new BlockEntityBrewingStand(getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+            new BlockEntityBrewingStand(this.level.getChunk(this.x >> 4, this.z >> 4), nbt);
 
             return true;
         }
@@ -95,7 +95,7 @@ public class BlockBrewingStand extends BlockSolid {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null) {
-            BlockEntity t = getLevel().getBlockEntity(this);
+            BlockEntity t = this.level.getBlockEntity(this);
             BlockEntityBrewingStand brewing = null;
             if (t instanceof BlockEntityBrewingStand) {
                 brewing = (BlockEntityBrewingStand) t;
@@ -103,10 +103,10 @@ public class BlockBrewingStand extends BlockSolid {
                 CompoundTag nbt = new CompoundTag()
                         .putList(new ListTag<>("Items"))
                         .putString("id", BlockEntity.BREWING_STAND)
-                        .putInt("x", (int) this.x)
-                        .putInt("y", (int) this.y)
-                        .putInt("z", (int) this.z);
-                brewing = new BlockEntityBrewingStand(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                        .putInt("x", this.x)
+                        .putInt("y", this.y)
+                        .putInt("z", this.z);
+                brewing = new BlockEntityBrewingStand(this.level.getChunk(this.x >> 4, this.z >> 4), nbt);
             }
 
             if (brewing.namedTag.contains("Lock") && brewing.namedTag.get("Lock") instanceof StringTag) {

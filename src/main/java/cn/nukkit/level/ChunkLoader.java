@@ -1,6 +1,7 @@
 package cn.nukkit.level;
 
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3;
 
 /**
@@ -29,5 +30,5 @@ public interface ChunkLoader {
 
     void onChunkPopulated(FullChunk chunk);
 
-    void onBlockChanged(Vector3 block);
+    void onBlockChanged(BlockVector3 block);
 }

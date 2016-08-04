@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.sound.LeverSound;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.redstone.Redstone;
 
 /**
@@ -59,8 +60,8 @@ public class BlockLever extends BlockFlowable {
     public boolean onActivate(Item item, Player player) {
         this.meta ^= 0x08;
 
-        this.getLevel().setBlock(this, this, true, true);
-        this.getLevel().addSound(new LeverSound(this, this.isPowerOn()));
+        this.level.setBlock(this, this, true, true);
+        this.level.addSound(new LeverSound(new Vector3(x, y, z), this.isPowerOn()));
         if (this.isPowerOn()) {
             this.setPowerSource(true);
             Redstone.active(this);
@@ -93,7 +94,7 @@ public class BlockLever extends BlockFlowable {
             } else {
                 this.meta = faces[face];
             }
-            this.getLevel().setBlock(block, this, true, false);
+            this.level.setBlock(block, this, true, false);
             return true;
         }
         return false;

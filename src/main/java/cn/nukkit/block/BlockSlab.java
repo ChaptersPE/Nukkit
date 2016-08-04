@@ -90,11 +90,11 @@ public class BlockSlab extends BlockTransparent {
         this.meta &= 0x07;
         if (face == 0) {
             if (target.getId() == SLAB && (target.getDamage() & 0x08) == 0x08 && (target.getDamage() & 0x07) == (this.meta & 0x07)) {
-                this.getLevel().setBlock(target, new BlockDoubleSlab(this.meta), true);
+                this.level.setBlock(target, new BlockDoubleSlab(this.meta), true);
 
                 return true;
             } else if (block.getId() == SLAB && (block.getDamage() & 0x07) == (this.meta & 0x07)) {
-                this.getLevel().setBlock(block, new BlockDoubleSlab(this.meta), true);
+                this.level.setBlock(block, new BlockDoubleSlab(this.meta), true);
 
                 return true;
             } else {
@@ -102,11 +102,11 @@ public class BlockSlab extends BlockTransparent {
             }
         } else if (face == 1) {
             if (target.getId() == SLAB && (target.getDamage() & 0x08) == 0 && (target.getDamage() & 0x07) == (this.meta & 0x07)) {
-                this.getLevel().setBlock(target, new BlockDoubleSlab(this.meta), true);
+                this.level.setBlock(target, new BlockDoubleSlab(this.meta), true);
 
                 return true;
             } else if (block.getId() == SLAB && (block.getDamage() & 0x07) == (this.meta & 0x07)) {
-                this.getLevel().setBlock(block, new BlockDoubleSlab(this.meta), true);
+                this.level.setBlock(block, new BlockDoubleSlab(this.meta), true);
 
                 return true;
             }
@@ -114,7 +114,7 @@ public class BlockSlab extends BlockTransparent {
         } else {
             if (block.getId() == SLAB) {
                 if ((block.getDamage() & 0x07) == (this.meta & 0x07)) {
-                    this.getLevel().setBlock(block, new BlockDoubleSlab(this.meta), true);
+                    this.level.setBlock(block, new BlockDoubleSlab(this.meta), true);
 
                     return true;
                 }
@@ -130,7 +130,7 @@ public class BlockSlab extends BlockTransparent {
         if (block.getId() == SLAB && (target.getDamage() & 0x07) != (this.meta & 0x07)) {
             return false;
         }
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
 
         return true;
     }

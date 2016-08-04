@@ -39,7 +39,7 @@ public abstract class BlockStairs extends BlockTransparent {
         if ((fy > 0.5 && face != 1) || face == 0) {
             this.meta |= 0x04; //Upside-down stairs
         }
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
 
         return true;
     }

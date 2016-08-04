@@ -81,7 +81,7 @@ public class BlockAnvil extends BlockFallable {
             } else if (damage >= 8 && damage <= 11) {
                 this.meta = faces[player != null ? player.getDirection() : 0] | 0x08;
             }
-            this.getLevel().setBlock(block, this, true);
+            this.level.setBlock(block, this, true);
             return true;
         }
         return false;
@@ -90,7 +90,7 @@ public class BlockAnvil extends BlockFallable {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null) {
-            player.addWindow(new AnvilInventory(this));
+            player.addWindow(new AnvilInventory(this, this.level));
         }
         return true;
     }

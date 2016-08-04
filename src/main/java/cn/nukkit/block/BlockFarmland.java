@@ -4,7 +4,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -63,10 +63,10 @@ public class BlockFarmland extends BlockTransparent {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
             boolean found = false;
 
-            Vector3 v = new Vector3();
+            BlockVector3 v = new BlockVector3();
 
-            for (int x = (int) this.x - 1; x <= this.x + 1; x++) {
-                for (int z = (int) this.z - 1; z <= this.z + 1; z++) {
+            for (int x = this.x - 1; x <= this.x + 1; x++) {
+                for (int z = this.z - 1; z <= this.z + 1; z++) {
                     if (z == this.z && x == this.x) {
                         continue;
                     }

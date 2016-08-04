@@ -32,7 +32,7 @@ public class BlockMushroomRed extends BlockFlowable {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (getSide(0).isTransparent()) {
-                getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
             }
@@ -44,7 +44,7 @@ public class BlockMushroomRed extends BlockFlowable {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         Block down = getSide(0);
         if (!down.isTransparent()) {
-            getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
 
             return true;
         }

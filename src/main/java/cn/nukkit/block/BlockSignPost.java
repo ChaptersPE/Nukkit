@@ -70,10 +70,10 @@ public class BlockSignPost extends BlockTransparent {
 
             if (face == 1) {
                 meta = (int) Math.floor(((player.yaw + 180) * 16 / 360) + 0.5) & 0x0f;
-                getLevel().setBlock(block, new BlockSignPost(meta), true);
+                this.level.setBlock(block, new BlockSignPost(meta), true);
             } else {
                 meta = face;
-                getLevel().setBlock(block, new BlockWallSign(meta), true);
+                this.level.setBlock(block, new BlockWallSign(meta), true);
             }
 
             if (player != null) {
@@ -86,7 +86,7 @@ public class BlockSignPost extends BlockTransparent {
                 }
             }
 
-            new BlockEntitySign(getLevel().getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
+            new BlockEntitySign(this.level.getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
 
             return true;
         }
@@ -98,7 +98,7 @@ public class BlockSignPost extends BlockTransparent {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (getSide(Vector3.SIDE_DOWN).getId() == Block.AIR) {
-                getLevel().useBreakOn(this);
+                level.useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
             }

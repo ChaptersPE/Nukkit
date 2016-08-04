@@ -79,7 +79,7 @@ public class BlockRedstoneWire extends BlockFlowable {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(Vector3.SIDE_DOWN).isTransparent()) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }
@@ -92,7 +92,7 @@ public class BlockRedstoneWire extends BlockFlowable {
             return false;
         } else {
             this.setPowerLevel(this.getNeighborPowerLevel() - 1);
-            block.getLevel().setBlock(block, this, true, true);
+            block.level.setBlock(block, this, true, true);
             Redstone.active(this);
             return true;
         }
@@ -101,7 +101,7 @@ public class BlockRedstoneWire extends BlockFlowable {
     @Override
     public boolean onBreak(Item item) {
         int level = this.getPowerLevel();
-        this.getLevel().setBlock(this, new BlockAir(), true, false);
+        this.level.setBlock(this, new BlockAir(), true, false);
         Redstone.deactive(this, level);
         return true;
     }

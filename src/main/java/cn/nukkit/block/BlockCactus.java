@@ -9,6 +9,7 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.BlockColor;
 
@@ -67,12 +68,12 @@ public class BlockCactus extends BlockTransparent {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             Block down = getSide(0);
             if (down.getId() != SAND && down.getId() != CACTUS) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
             } else {
                 for (int side = 2; side <= 5; ++side) {
                     Block block = getSide(side);
                     if (!block.canBeFlowedInto()) {
-                        this.getLevel().useBreakOn(this);
+                        this.level.useBreakOn(this);
                     }
                 }
             }
@@ -80,20 +81,20 @@ public class BlockCactus extends BlockTransparent {
             if (getSide(0).getId() != CACTUS) {
                 if (this.meta == 0x0F) {
                     for (int y = 1; y < 3; ++y) {
-                        Block b = this.getLevel().getBlock(new Vector3(this.x, this.y + y, this.z));
+                        Block b = this.level.getBlock(new BlockVector3(this.x, this.y + y, this.z));
                         if (b.getId() == AIR) {
                             BlockGrowEvent event = new BlockGrowEvent(b, new BlockCactus());
                             Server.getInstance().getPluginManager().callEvent(event);
                             if (!event.isCancelled()) {
-                                this.getLevel().setBlock(b, event.getNewState(), true);
+                                this.level.setBlock(b, event.getNewState(), true);
                             }
                         }
                     }
                     this.meta = 0;
-                    this.getLevel().setBlock(this, this);
+                    this.level.setBlock(this, this);
                 } else {
                     ++this.meta;
-                    this.getLevel().setBlock(this, this);
+                    this.level.setBlock(this, this);
                 }
             }
         }
@@ -110,7 +111,7 @@ public class BlockCactus extends BlockTransparent {
             Block block2 = getSide(4);
             Block block3 = getSide(5);
             if (block0.isTransparent() && block1.isTransparent() && block2.isTransparent() && block3.isTransparent()) {
-                this.getLevel().setBlock(this, this, true);
+                this.level.setBlock(this, this, true);
 
                 return true;
             }

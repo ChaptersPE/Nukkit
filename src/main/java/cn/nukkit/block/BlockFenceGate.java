@@ -6,6 +6,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.sound.DoorSound;
 import cn.nukkit.math.AxisAlignedBB;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -83,7 +84,7 @@ public class BlockFenceGate extends BlockTransparent {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         int[] faces = new int[]{3, 0, 1, 2};
         this.meta = faces[(player != null) ? player.getDirection() : 0] & 0x03;
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
 
         return true;
     }
@@ -105,8 +106,8 @@ public class BlockFenceGate extends BlockTransparent {
             return false;
         }
 
-        this.getLevel().setBlock(this, this, true);
-        this.getLevel().addSound(new DoorSound(this));
+        this.level.setBlock(this, this, true);
+        this.level.addSound(new DoorSound(new Vector3(x, y, z)));
 
         return true;
     }
@@ -118,7 +119,7 @@ public class BlockFenceGate extends BlockTransparent {
 
     public boolean toggle(Player player) {
         DoorToggleEvent event = new DoorToggleEvent(this, player);
-        this.getLevel().getServer().getPluginManager().callEvent(event);
+        this.level.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return false;

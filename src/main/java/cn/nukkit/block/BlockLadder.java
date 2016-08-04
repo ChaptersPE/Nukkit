@@ -108,7 +108,7 @@ public class BlockLadder extends BlockTransparent {
         if (!target.isTransparent()) {
             if (face >= 2 && face <= 5) {
                 this.meta = face;
-                this.getLevel().setBlock(block, this, true, true);
+                this.level.setBlock(block, this, true, true);
                 return true;
             }
         }
@@ -127,7 +127,7 @@ public class BlockLadder extends BlockTransparent {
                     4
             };
             if (this.getSide(faces[this.meta]).isTransparent()) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
             }
         }
         return 0;

@@ -70,7 +70,7 @@ public class BlockEnchantingTable extends BlockSolid {
 
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
 
         CompoundTag nbt = new CompoundTag()
                 .putString("id", BlockEntity.ENCHANT_TABLE)
@@ -91,7 +91,7 @@ public class BlockEnchantingTable extends BlockSolid {
             }
         }
 
-        BlockEntity.createBlockEntity(BlockEntity.ENCHANT_TABLE, getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+        BlockEntity.createBlockEntity(BlockEntity.ENCHANT_TABLE, level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
 
         return true;
     }
@@ -99,7 +99,7 @@ public class BlockEnchantingTable extends BlockSolid {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null) {
-            BlockEntity t = this.getLevel().getBlockEntity(this);
+            BlockEntity t = this.level.getBlockEntity(this);
             BlockEntityEnchantTable enchantTable;
             if (t instanceof BlockEntityEnchantTable) {
                 enchantTable = (BlockEntityEnchantTable) t;
@@ -107,10 +107,10 @@ public class BlockEnchantingTable extends BlockSolid {
                 CompoundTag nbt = new CompoundTag()
                         .putList(new ListTag<>("Items"))
                         .putString("id", BlockEntity.ENCHANT_TABLE)
-                        .putInt("x", (int) this.x)
-                        .putInt("y", (int) this.y)
-                        .putInt("z", (int) this.z);
-                enchantTable = new BlockEntityEnchantTable(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                        .putInt("x", this.x)
+                        .putInt("y", this.y)
+                        .putInt("z", this.z);
+                enchantTable = new BlockEntityEnchantTable(this.level.getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
             }
 
             if (enchantTable.namedTag.contains("Lock") && enchantTable.namedTag.get("Lock") instanceof StringTag) {
@@ -119,7 +119,7 @@ public class BlockEnchantingTable extends BlockSolid {
                 }
             }
 
-            player.addWindow(new EnchantInventory(this.getLocation()));
+            player.addWindow(new EnchantInventory(this, this.level));
         }
 
         return true;

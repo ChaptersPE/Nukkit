@@ -49,13 +49,13 @@ public class BlockRedstoneTorch extends BlockTorch {
                     1, //5
             };
             this.meta = faces[face];
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             Redstone.active(this);
 
             return true;
         } else if (!below.isTransparent() || below instanceof BlockFence || below.getId() == COBBLE_WALL) {
             this.meta = 0;
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             Redstone.active(this);
 
             return true;
@@ -67,7 +67,7 @@ public class BlockRedstoneTorch extends BlockTorch {
     @Override
     public boolean onBreak(Item item) {
         int level = this.getPowerLevel();
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
+        this.level.setBlock(this, new BlockAir(), true, true);
         Redstone.deactive(this, level);
         return true;
     }

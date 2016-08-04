@@ -34,7 +34,7 @@ public abstract class BlockCrops extends BlockFlowable {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         Block down = this.getSide(0);
         if (down.getId() == FARMLAND) {
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             return true;
         }
         return false;
@@ -61,7 +61,7 @@ public abstract class BlockCrops extends BlockFlowable {
                 return false;
             }
 
-            this.getLevel().setBlock(this, ev.getNewState(), true, true);
+            this.level.setBlock(this, ev.getNewState(), true, true);
             item.count--;
 
             return true;
@@ -74,7 +74,7 @@ public abstract class BlockCrops extends BlockFlowable {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(Vector3.SIDE_DOWN).getId() != FARMLAND) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
@@ -86,7 +86,7 @@ public abstract class BlockCrops extends BlockFlowable {
                     Server.getInstance().getPluginManager().callEvent(ev);
 
                     if (!ev.isCancelled()) {
-                        this.getLevel().setBlock(this, ev.getNewState(), true, true);
+                        this.level.setBlock(this, ev.getNewState(), true, true);
                     } else {
                         return Level.BLOCK_UPDATE_RANDOM;
                     }

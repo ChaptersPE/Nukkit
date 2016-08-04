@@ -7,6 +7,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.sound.TNTPrimeSound;
 import cn.nukkit.math.NukkitRandom;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
@@ -63,7 +64,7 @@ public class BlockTNT extends BlockSolid {
     }
 
     public void prime() {
-        this.getLevel().setBlock(this, new BlockAir(), true);
+        this.level.setBlock(this, new BlockAir(), true);
         double mot = (new NukkitRandom()).nextSignedFloat() * Math.PI * 2;
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<DoubleTag>("Pos")
@@ -79,11 +80,11 @@ public class BlockTNT extends BlockSolid {
                         .add(new FloatTag("", 0)))
                 .putByte("Fuse", 80);
         Entity tnt = new EntityPrimedTNT(
-                this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4),
+                this.level.getChunk(this.x >> 4, this.z >> 4),
                 nbt
         );
         tnt.spawnToAll();
-        this.level.addSound(new TNTPrimeSound(this));
+        this.level.addSound(new TNTPrimeSound(new Vector3(x, y, z)));
     }
 
     @Override

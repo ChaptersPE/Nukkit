@@ -34,7 +34,7 @@ public class BlockDeadBush extends BlockFlowable {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         Block down = this.getSide(0);
         if (down.getId() == SAND || down.getId() == HARDENED_CLAY || down.getId() == STAINED_CLAY || down.getId() == PODZOL) {
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             return true;
         }
         return false;
@@ -45,7 +45,7 @@ public class BlockDeadBush extends BlockFlowable {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(0).isTransparent()) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
             }

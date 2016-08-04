@@ -142,7 +142,7 @@ public class BlockTrapdoor extends BlockTransparent {
             }
             this.meta |= upDownBit;
             this.meta |= faceBit;
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             return true;
         }
         return false;
@@ -161,8 +161,8 @@ public class BlockTrapdoor extends BlockTransparent {
             return false;
         }
 
-        this.getLevel().setBlock(this, this, true);
-        this.level.addSound(new DoorSound(this));
+        this.level.setBlock(this, this, true);
+        this.level.addSound(new DoorSound(new Vector3(x, y, z)));
         return true;
     }
 
@@ -173,7 +173,7 @@ public class BlockTrapdoor extends BlockTransparent {
 
     public boolean toggle(Player player) {
         DoorToggleEvent event = new DoorToggleEvent(this, player);
-        this.getLevel().getServer().getPluginManager().callEvent(event);
+        this.level.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return false;

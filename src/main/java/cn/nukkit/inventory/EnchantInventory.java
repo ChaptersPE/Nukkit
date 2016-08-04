@@ -8,7 +8,9 @@ import cn.nukkit.item.ItemDye;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.item.enchantment.EnchantmentEntry;
 import cn.nukkit.item.enchantment.EnchantmentList;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.network.protocol.CraftingDataPacket;
 
@@ -30,9 +32,9 @@ public class EnchantInventory extends ContainerInventory {
     private int[] levels = null;
     private EnchantmentEntry[] entries = null;
 
-    public EnchantInventory(Position position) {
+    public EnchantInventory(BlockVector3 position, Level level) {
         super(null, InventoryType.get(InventoryType.ENCHANT_TABLE));
-        this.holder = new FakeBlockMenu(this, position);
+        this.holder = new FakeBlockMenu(this, position, level);
     }
 
     @Override

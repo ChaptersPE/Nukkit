@@ -200,8 +200,8 @@ public abstract class BlockDoor extends BlockTransparent {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(0).getId() == AIR) {
                 if (this.getSide(1) instanceof BlockDoor) {
-                    this.getLevel().setBlock(this.getSide(1), new BlockAir(), false);
-                    this.getLevel().useBreakOn(this);
+                    this.level.setBlock(this.getSide(1), new BlockAir(), false);
+                    this.level.useBreakOn(this);
                 }
 
                 return Level.BLOCK_UPDATE_NORMAL;
@@ -235,8 +235,8 @@ public abstract class BlockDoor extends BlockTransparent {
             }
 
             this.setDamage(direction & 0x03);
-            this.getLevel().setBlock(block, this, true, true); //Bottom
-            this.getLevel().setBlock(blockUp, Block.get(this.getId(), metaUp), true); //Top
+            this.level.setBlock(block, this, true, true); //Bottom
+            this.level.setBlock(blockUp, Block.get(this.getId(), metaUp), true); //Top
             return true;
         }
 
@@ -248,15 +248,15 @@ public abstract class BlockDoor extends BlockTransparent {
         if ((this.getDamage() & 0x08) == 0x08) {
             Block down = this.getSide(0);
             if (down.getId() == this.getId()) {
-                this.getLevel().setBlock(down, new BlockAir(), true);
+                this.level.setBlock(down, new BlockAir(), true);
             }
         } else {
             Block up = this.getSide(1);
             if (up.getId() == this.getId()) {
-                this.getLevel().setBlock(up, new BlockAir(), true);
+                this.level.setBlock(up, new BlockAir(), true);
             }
         }
-        this.getLevel().setBlock(this, new BlockAir(), true);
+        this.level.setBlock(this, new BlockAir(), true);
 
         return true;
     }
@@ -272,13 +272,13 @@ public abstract class BlockDoor extends BlockTransparent {
             return false;
         }
 
-        this.level.addSound(new DoorSound(this));
+        this.level.addSound(new DoorSound(new Vector3(x, y, z)));
         return true;
     }
 
     public boolean toggle(Player player) {
         DoorToggleEvent event = new DoorToggleEvent(this, player);
-        this.getLevel().getServer().getPluginManager().callEvent(event);
+        this.level.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return false;
@@ -290,10 +290,10 @@ public abstract class BlockDoor extends BlockTransparent {
                 return false;
             }
 
-            this.getLevel().setBlock(down, Block.get(this.getId(), down.getDamage() ^ 0x04), true);
+            this.level.setBlock(down, Block.get(this.getId(), down.getDamage() ^ 0x04), true);
         } else { //Down
             this.meta ^= 0x04;
-            this.getLevel().setBlock(this, this, true);
+            this.level.setBlock(this, this, true);
         }
 
         return true;

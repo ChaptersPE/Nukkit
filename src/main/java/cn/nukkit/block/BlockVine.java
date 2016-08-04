@@ -131,7 +131,7 @@ public class BlockVine extends BlockTransparent {
                     2
             };
             this.meta = faces[face];
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             return true;
         }
         return false;

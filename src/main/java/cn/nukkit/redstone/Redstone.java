@@ -48,7 +48,7 @@ public class Redstone {
             currentLevel = updatingObj.getPopulation();
             if (currentLevel > updating.getPowerLevel()) {
                 updating.setPowerLevel(currentLevel);
-                updating.getLevel().setBlock(updating, updating, true, true);
+                updating.level.setBlock(updating, updating, true, true);
                 addToQueue(updateQueue, updating);
             }
         }
@@ -67,7 +67,7 @@ public class Redstone {
             currentLevel = updatingObj.getPopulation();
             if (currentLevel > updating.getPowerLevel()) {
                 updating.setPowerLevel(currentLevel);
-                updating.getLevel().setBlock(updating, updating, true, true);
+                updating.level.setBlock(updating, updating, true, true);
                 if (allBlocks.containsKey(updating.getLocationHash())) {
                     allBlocks.remove(updating.getLocationHash());
                 }
@@ -106,7 +106,7 @@ public class Redstone {
 
         for (Block block : updateMap.values()) {
             block.setPowerLevel(0);
-            block.getLevel().setBlock(block, block, true, true);
+            block.level.setBlock(block, block, true, true);
         }
     }
 

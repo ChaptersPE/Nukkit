@@ -50,7 +50,7 @@ public class BlockTorch extends BlockFlowable {
             };
 
             if (this.getSide(faces[side]).isTransparent() && !(side == 0 && (below instanceof BlockFence || below.getId() == COBBLE_WALL))) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
             }
@@ -73,12 +73,12 @@ public class BlockTorch extends BlockFlowable {
                     1, //5
             };
             this.meta = faces[face];
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
 
             return true;
         } else if (!below.isTransparent() || below instanceof BlockFence || below.getId() == COBBLE_WALL) {
             this.meta = 0;
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
 
             return true;
         }

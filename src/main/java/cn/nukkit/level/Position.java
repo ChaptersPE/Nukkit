@@ -87,11 +87,6 @@ public class Position extends Vector3 {
         return this;
     }
 
-    public Block getLevelBlock() {
-        if (this.isValid()) return this.level.getBlock(this);
-        else throw new LevelException("Undefined Level reference");
-    }
-
     public Location getLocation() {
         if (this.isValid()) return new Location(this.x, this.y, this.z, 0, 0, this.level);
         else throw new LevelException("Undefined Level reference");

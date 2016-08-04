@@ -80,9 +80,9 @@ public class BlockFlowerPot extends BlockFlowable {
                 nbt.put(aTag.getName(), aTag);
             }
         }
-        new BlockEntityFlowerPot(getLevel().getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
+        new BlockEntityFlowerPot(level.getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
 
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
         return true;
     }
 
@@ -98,7 +98,7 @@ public class BlockFlowerPot extends BlockFlowable {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        BlockEntity blockEntity = getLevel().getBlockEntity(this);
+        BlockEntity blockEntity = level.getBlockEntity(this);
         if (!(blockEntity instanceof BlockEntityFlowerPot)) return false;
         if (blockEntity.namedTag.getShort("item") != 0 || blockEntity.namedTag.getInt("mData") != 0) return false;
         int itemID;
@@ -117,7 +117,7 @@ public class BlockFlowerPot extends BlockFlowable {
         blockEntity.namedTag.putInt("data", itemMeta);
 
         this.meta = 1;
-        this.getLevel().setBlock(this, this, true);
+        this.level.setBlock(this, this, true);
         ((BlockEntityFlowerPot) blockEntity).spawnToAll();
 
         if (player.isSurvival()) {
@@ -132,7 +132,7 @@ public class BlockFlowerPot extends BlockFlowable {
         boolean dropInside = false;
         int insideID = 0;
         int insideMeta = 0;
-        BlockEntity blockEntity = getLevel().getBlockEntity(this);
+        BlockEntity blockEntity = this.level.getBlockEntity(this);
         if (blockEntity instanceof BlockEntityFlowerPot) {
             dropInside = true;
             insideID = blockEntity.namedTag.getShort("item");

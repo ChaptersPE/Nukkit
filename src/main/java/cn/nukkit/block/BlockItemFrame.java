@@ -45,11 +45,11 @@ public class BlockItemFrame extends BlockTransparent {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        BlockEntity blockEntity = this.level.getBlockEntity(this);
         BlockEntityItemFrame itemFrame = (BlockEntityItemFrame) blockEntity;
         if (itemFrame.getItem().getId() == Item.AIR) {
             itemFrame.setItem(Item.get(item.getId(), item.getDamage(), 1));
-            this.getLevel().addSound(new ItemFrameItemAddedSound(this));
+            this.level.addSound(new ItemFrameItemAddedSound(new Vector3(x, y, z)));
             if (player != null && player.isSurvival()) {
                 int count = item.getCount();
                 if (count-- <= 0) {
@@ -67,7 +67,7 @@ public class BlockItemFrame extends BlockTransparent {
                 itemRot++;
             }
             itemFrame.setItemRotation(itemRot);
-            this.getLevel().addSound(new ItemFrameItemRotated(this));
+            this.level.addSound(new ItemFrameItemRotated(new Vector3(x, y, z)));
         }
         return true;
     }
@@ -91,12 +91,12 @@ public class BlockItemFrame extends BlockTransparent {
                 default:
                     return false;
             }
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             CompoundTag nbt = new CompoundTag()
                     .putString("id", BlockEntity.ITEM_FRAME)
-                    .putInt("x", (int) block.x)
-                    .putInt("y", (int) block.y)
-                    .putInt("z", (int) block.z)
+                    .putInt("x", block.x)
+                    .putInt("y", block.y)
+                    .putInt("z", block.z)
                     .putByte("ItemRotation", 0)
                     .putFloat("ItemDropChance", 1.0f);
             if (item.hasCustomBlockData()) {
@@ -104,8 +104,8 @@ public class BlockItemFrame extends BlockTransparent {
                     nbt.put(aTag.getName(), aTag);
                 }
             }
-            new BlockEntityItemFrame(this.getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
-            this.getLevel().addSound(new ItemFramePlacedSound(this));
+            new BlockEntityItemFrame(this.level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+            this.level.addSound(new ItemFramePlacedSound(new Vector3(x, y, z)));
             return true;
         }
         return false;
@@ -113,14 +113,14 @@ public class BlockItemFrame extends BlockTransparent {
 
     @Override
     public boolean onBreak(Item item) {
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
-        this.getLevel().addSound(new ItemFrameRemovedSound(this));
+        this.level.setBlock(this, new BlockAir(), true, true);
+        this.level.addSound(new ItemFrameRemovedSound(new Vector3(x, y, z)));
         return true;
     }
 
     @Override
     public int[][] getDrops(Item item) {
-        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        BlockEntity blockEntity = this.level.getBlockEntity(this);
         BlockEntityItemFrame itemFrame = (BlockEntityItemFrame) blockEntity;
         int chance = new Random().nextInt(100) + 1;
         if (itemFrame != null && chance <= (itemFrame.getItemDropChance() * 100)) {

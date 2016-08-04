@@ -28,7 +28,7 @@ public abstract class BlockFallable extends BlockSolid {
 
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
-        return this.getLevel().setBlock(this, this, true, true);
+        return this.level.setBlock(this, this, true, true);
     }
 
     public int onUpdate(int type) {
@@ -51,7 +51,7 @@ public abstract class BlockFallable extends BlockSolid {
                         .putInt("TileID", this.getId())
                         .putByte("Data", this.getDamage());
 
-                EntityFallingBlock fall = new EntityFallingBlock(this.getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+                EntityFallingBlock fall = new EntityFallingBlock(this.level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
 
                 fall.spawnToAll();
             }

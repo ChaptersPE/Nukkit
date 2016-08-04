@@ -51,15 +51,15 @@ public class BlockIce extends BlockTransparent {
 
     @Override
     public boolean onBreak(Item item) {
-        this.getLevel().setBlock(this, new BlockWater(), true);
+        this.level.setBlock(this, new BlockWater(), true);
         return true;
     }
 
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 12) {
-                this.getLevel().setBlock(this, new BlockWater(), true);
+            if (this.level.getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 12) {
+                this.level.setBlock(this, new BlockWater(), true);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }

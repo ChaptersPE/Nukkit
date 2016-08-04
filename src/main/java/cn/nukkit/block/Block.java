@@ -5,9 +5,12 @@ import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.MovingObjectPosition;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.AxisAlignedBB;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.metadata.Metadatable;
@@ -21,7 +24,7 @@ import java.util.List;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class Block extends Position implements Metadatable, Cloneable {
+public abstract class Block extends BlockVector3 implements Metadatable, Cloneable {
     public static final int AIR = 0;
     public static final int STONE = 1;
     public static final int GRASS = 2;
@@ -273,6 +276,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
     public static final int BEETROOT_BLOCK = 244;
     public static final int STONECUTTER = 245;
     public static final int GLOWING_OBSIDIAN = 246;
+
+    public Level level;
 
     public static Class[] list = null;
     public static Block[] fullList = null;
@@ -539,11 +544,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
     }
 
     public static Block get(int id, Integer meta) {
-        return get(id, meta, null);
+        return get(id, meta, null, null);
     }
 
     @SuppressWarnings("unchecked")
-    public static Block get(int id, Integer meta, Position pos) {
+    public static Block get(int id, Integer meta, BlockVector3 pos, Level level) {
         Block block;
         try {
             Class c = list[id];
@@ -562,7 +567,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
             block.x = pos.x;
             block.y = pos.y;
             block.z = pos.z;
-            block.level = pos.level;
+            block.level = level;
         }
         return block;
     }
@@ -572,7 +577,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
     }
 
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
-        return this.getLevel().setBlock(this, this, true, true);
+        return this.level.setBlock(this, this, true, true);
     }
 
     public boolean isBreakable(Item item) {
@@ -584,7 +589,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
     }
 
     public boolean onBreak(Item item) {
-        return this.getLevel().setBlock(this, new BlockAir(), true, true);
+        return this.level.setBlock(this, new BlockAir(), true, true);
     }
 
     public int onUpdate(int type) {
@@ -679,11 +684,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
         this.meta = (meta == null ? 0 : meta & 0x0f);
     }
 
-    final public void position(Position v) {
+    final public void position(BlockVector3 v, Level level) {
         this.x = (int) v.x;
         this.y = (int) v.y;
         this.z = (int) v.z;
-        this.level = v.level;
+        this.level = level;
         this.boundingBox = null;
     }
 
@@ -747,9 +752,9 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
 
     public Block getSide(int side, int step) {
         if (this.isValid()) {
-            return this.getLevel().getBlock(super.getSide(side, step));
+            return this.level.getBlock(super.getSide(side, step));
         }
-        return Block.get(Item.AIR, 0, Position.fromObject(new Vector3(this.x, this.y, this.z).getSide(side, step)));
+        return Block.get(Item.AIR, 0, new BlockVector3(this.x, this.y, this.z).getSide(side, step), level);
     }
 
     @Override
@@ -869,15 +874,15 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
 
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) throws Exception {
-        if (this.getLevel() != null) {
-            this.getLevel().getBlockMetadata().setMetadata(this, metadataKey, newMetadataValue);
+        if (this.level != null) {
+            this.level.getBlockMetadata().setMetadata(this, metadataKey, newMetadataValue);
         }
     }
 
     @Override
     public List<MetadataValue> getMetadata(String metadataKey) throws Exception {
-        if (this.getLevel() != null) {
-            return this.getLevel().getBlockMetadata().getMetadata(this, metadataKey);
+        if (this.level != null) {
+            return this.level.getBlockMetadata().getMetadata(this, metadataKey);
 
         }
         return null;
@@ -885,13 +890,13 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
 
     @Override
     public boolean hasMetadata(String metadataKey) throws Exception {
-        return this.getLevel() != null && this.getLevel().getBlockMetadata().hasMetadata(this, metadataKey);
+        return this.level != null && this.level.getBlockMetadata().hasMetadata(this, metadataKey);
     }
 
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) throws Exception {
-        if (this.getLevel() != null) {
-            this.getLevel().getBlockMetadata().removeMetadata(this, metadataKey, owningPlugin);
+        if (this.level != null) {
+            this.level.getBlockMetadata().removeMetadata(this, metadataKey, owningPlugin);
         }
     }
 
@@ -955,4 +960,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
         return 0;
     }
 
+    public boolean isValid() {
+        return this.level != null;
+    }
 }

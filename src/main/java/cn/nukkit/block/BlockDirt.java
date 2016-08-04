@@ -65,7 +65,7 @@ public class BlockDirt extends BlockSolid {
     public boolean onActivate(Item item, Player player) {
         if (item.isHoe()) {
             item.useOn(this);
-            this.getLevel().setBlock(this, new BlockFarmland(), true);
+            this.level.setBlock(this, new BlockFarmland(), true);
 
             return true;
         }

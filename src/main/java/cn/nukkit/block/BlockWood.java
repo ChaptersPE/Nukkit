@@ -78,7 +78,7 @@ public class BlockWood extends BlockSolid {
         };
 
         this.meta = ((this.meta & 0x03) | faces[face]);
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
 
         return true;
     }

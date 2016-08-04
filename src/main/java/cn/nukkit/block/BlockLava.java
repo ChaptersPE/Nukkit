@@ -8,6 +8,7 @@ import cn.nukkit.event.entity.EntityDamageByBlockEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
@@ -67,8 +68,8 @@ public class BlockLava extends BlockLiquid {
 
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
-        boolean ret = this.getLevel().setBlock(this, this, true, false);
-        this.getLevel().scheduleUpdate(this, this.tickRate());
+        boolean ret = this.level.setBlock(this, this, true, false);
+        this.level.scheduleUpdate(this, this.tickRate());
 
         return ret;
     }
@@ -79,20 +80,20 @@ public class BlockLava extends BlockLiquid {
 
         if (type == Level.BLOCK_UPDATE_RANDOM) {
 
-            Random random = this.getLevel().rand;
+            Random random = this.level.rand;
 
             int i = random.nextInt(3);
 
             if (i > 0) {
                 for (int k = 0; k < i; ++k) {
-                    Vector3 v = this.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
-                    Block block = this.getLevel().getBlock(v);
+                    BlockVector3 v = this.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
+                    Block block = this.level.getBlock(v);
 
                     if (block.getId() == AIR) {
                         if (this.isSurroundingBlockFlammable(block)) {
                             BlockFire fire = new BlockFire();
-                            this.getLevel().setBlock(v, fire, true);
-                            this.getLevel().scheduleUpdate(v, fire.tickRate());
+                            this.level.setBlock(v, fire, true);
+                            this.level.scheduleUpdate(v, fire.tickRate());
                             return Level.BLOCK_UPDATE_RANDOM;
                         }
                     } else if (block.isSolid()) {
@@ -101,13 +102,13 @@ public class BlockLava extends BlockLiquid {
                 }
             } else {
                 for (int k = 0; k < 3; ++k) {
-                    Vector3 v = this.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
-                    Block block = this.getLevel().getBlock(v);
+                    BlockVector3 v = this.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
+                    Block block = this.level.getBlock(v);
 
                     if (block.getSide(SIDE_UP).getId() == AIR && block.getBurnChance() > 0) {
                         BlockFire fire = new BlockFire();
-                        this.getLevel().setBlock(v, fire, true);
-                        this.getLevel().scheduleUpdate(v, fire.tickRate());
+                        this.level.setBlock(v, fire, true);
+                        this.level.scheduleUpdate(v, fire.tickRate());
                     }
                 }
             }

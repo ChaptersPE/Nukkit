@@ -52,7 +52,7 @@ public class BlockNoteblock extends BlockSolid {
     public int getStrength() {
         if (this.meta < 24) this.meta++;
         else this.meta = 0;
-        this.getLevel().setBlock(this, this);
+        this.level.setBlock(this, this);
         return this.meta;
     }
 
@@ -92,7 +92,7 @@ public class BlockNoteblock extends BlockSolid {
     public boolean onActivate(Item item, Player player) {
         Block up = this.getSide(Vector3.SIDE_UP);
         if (up.getId() == Block.AIR) {
-            this.getLevel().addSound(new NoteBoxSound(this, this.getInstrument(), this.getStrength()));
+            this.level.addSound(new NoteBoxSound(new Vector3(x, y, z), this.getInstrument(), this.getStrength()));
             return true;
         } else {
             return false;

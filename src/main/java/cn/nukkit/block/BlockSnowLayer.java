@@ -57,7 +57,7 @@ public class BlockSnowLayer extends BlockFlowable {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         Block down = this.getSide(0);
         if (down.isSolid()) {
-            this.getLevel().setBlock(block, this, true);
+            this.level.setBlock(block, this, true);
 
             return true;
         }
@@ -68,13 +68,13 @@ public class BlockSnowLayer extends BlockFlowable {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(Vector3.SIDE_DOWN).isTransparent()) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 10) {
-                this.getLevel().setBlock(this, new BlockAir(), true);
+            if (this.level.getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 10) {
+                this.level.setBlock(this, new BlockAir(), true);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }

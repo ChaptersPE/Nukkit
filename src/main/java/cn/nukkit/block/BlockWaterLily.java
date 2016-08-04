@@ -58,7 +58,7 @@ public class BlockWaterLily extends BlockFlowable {
         if (target instanceof BlockWater) {
             Block up = target.getSide(Vector3.SIDE_UP);
             if (up.getId() == Block.AIR) {
-                this.getLevel().setBlock(up, this, true, true);
+                this.level.setBlock(up, this, true, true);
                 return true;
             }
         }
@@ -69,7 +69,7 @@ public class BlockWaterLily extends BlockFlowable {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (!(this.getSide(0) instanceof BlockWater)) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }

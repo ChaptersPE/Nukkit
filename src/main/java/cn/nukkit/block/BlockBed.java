@@ -65,7 +65,7 @@ public class BlockBed extends BlockTransparent {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        int time = this.getLevel().getTime() % Level.TIME_FULL;
+        int time = this.level.getTime() % Level.TIME_FULL;
 
         boolean isNight = (time >= Level.TIME_NIGHT && time < Level.TIME_SUNRISE);
 
@@ -124,8 +124,8 @@ public class BlockBed extends BlockTransparent {
 
             if (next.canBeReplaced() && !downNext.isTransparent()) {
                 int meta = ((d + 3) % 4) & 0x03;
-                this.getLevel().setBlock(block, Block.get(this.getId(), meta), true, true);
-                this.getLevel().setBlock(next, Block.get(this.getId(), meta | 0x08), true, true);
+                this.level.setBlock(block, Block.get(this.getId(), meta), true, true);
+                this.level.setBlock(next, Block.get(this.getId(), meta | 0x08), true, true);
 
                 return true;
             }
@@ -143,26 +143,26 @@ public class BlockBed extends BlockTransparent {
 
         if ((this.meta & 0x08) == 0x08) { //This is the Top part of bed
             if (blockNorth.getId() == this.getId() && blockNorth.meta != 0x08) { //Checks if the block ID&&meta are right
-                this.getLevel().setBlock(blockNorth, new BlockAir(), true, true);
+                this.level.setBlock(blockNorth, new BlockAir(), true, true);
             } else if (blockSouth.getId() == this.getId() && blockSouth.meta != 0x08) {
-                this.getLevel().setBlock(blockSouth, new BlockAir(), true, true);
+                this.level.setBlock(blockSouth, new BlockAir(), true, true);
             } else if (blockEast.getId() == this.getId() && blockEast.meta != 0x08) {
-                this.getLevel().setBlock(blockEast, new BlockAir(), true, true);
+                this.level.setBlock(blockEast, new BlockAir(), true, true);
             } else if (blockWest.getId() == this.getId() && blockWest.meta != 0x08) {
-                this.getLevel().setBlock(blockWest, new BlockAir(), true, true);
+                this.level.setBlock(blockWest, new BlockAir(), true, true);
             }
         } else { //Bottom Part of Bed
             if (blockNorth.getId() == this.getId() && (blockNorth.meta & 0x08) == 0x08) {
-                this.getLevel().setBlock(blockNorth, new BlockAir(), true, true);
+                this.level.setBlock(blockNorth, new BlockAir(), true, true);
             } else if (blockSouth.getId() == this.getId() && (blockSouth.meta & 0x08) == 0x08) {
-                this.getLevel().setBlock(blockSouth, new BlockAir(), true, true);
+                this.level.setBlock(blockSouth, new BlockAir(), true, true);
             } else if (blockEast.getId() == this.getId() && (blockEast.meta & 0x08) == 0x08) {
-                this.getLevel().setBlock(blockEast, new BlockAir(), true, true);
+                this.level.setBlock(blockEast, new BlockAir(), true, true);
             } else if (blockWest.getId() == this.getId() && (blockWest.meta & 0x08) == 0x08) {
-                this.getLevel().setBlock(blockWest, new BlockAir(), true, true);
+                this.level.setBlock(blockWest, new BlockAir(), true, true);
             }
         }
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
+        this.level.setBlock(this, new BlockAir(), true, true);
 
         return true;
     }

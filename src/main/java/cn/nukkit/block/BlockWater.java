@@ -37,8 +37,8 @@ public class BlockWater extends BlockLiquid {
 
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
-        boolean ret = this.getLevel().setBlock(this, this, true, false);
-        this.getLevel().scheduleUpdate(this, this.tickRate());
+        boolean ret = this.level.setBlock(this, this, true, false);
+        this.level.scheduleUpdate(this, this.tickRate());
 
         return ret;
     }

@@ -66,13 +66,13 @@ public class BlockFurnaceBurning extends BlockSolid {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         int faces[] = {4, 2, 5, 3};
         this.meta = faces[player != null ? player.getDirection() : 0];
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<>("Items"))
                 .putString("id", BlockEntity.FURNACE)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z);
+                .putInt("x", this.x)
+                .putInt("y", this.y)
+                .putInt("z", this.z);
 
         if (item.hasCustomName()) {
             nbt.putString("CustomName", item.getCustomName());
@@ -87,21 +87,21 @@ public class BlockFurnaceBurning extends BlockSolid {
             }
         }
 
-        new BlockEntityFurnace(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        new BlockEntityFurnace(this.level.getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
 
         return true;
     }
 
     @Override
     public boolean onBreak(Item item) {
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
+        this.level.setBlock(this, new BlockAir(), true, true);
         return true;
     }
 
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null) {
-            BlockEntity t = this.getLevel().getBlockEntity(this);
+            BlockEntity t = this.level.getBlockEntity(this);
             BlockEntityFurnace furnace;
             if (t instanceof BlockEntityFurnace) {
                 furnace = (BlockEntityFurnace) t;
@@ -109,10 +109,10 @@ public class BlockFurnaceBurning extends BlockSolid {
                 CompoundTag nbt = new CompoundTag()
                         .putList(new ListTag<>("Items"))
                         .putString("id", BlockEntity.FURNACE)
-                        .putInt("x", (int) this.x)
-                        .putInt("y", (int) this.y)
-                        .putInt("z", (int) this.z);
-                furnace = new BlockEntityFurnace(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                        .putInt("x", this.x)
+                        .putInt("y", this.y)
+                        .putInt("z", this.z);
+                furnace = new BlockEntityFurnace(this.level.getChunk((this.x) >> 4, (this.z) >> 4), nbt);
             }
 
             if (furnace.namedTag.contains("Lock") && furnace.namedTag.get("Lock") instanceof StringTag) {
@@ -131,7 +131,7 @@ public class BlockFurnaceBurning extends BlockSolid {
     public int[][] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new int[][]{
-                    {Item.FURNACE, 0, 1}
+                {Item.FURNACE, 0, 1}
             };
         } else {
             return new int[0][0];

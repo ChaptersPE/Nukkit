@@ -144,7 +144,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     protected int startAction = -1;
 
-    protected Vector3 sleeping = null;
+    protected BlockVector3 sleeping = null;
     protected Long clientID = null;
 
     private Integer loaderId = null;
@@ -877,7 +877,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return this.interfaz.getNetworkLatency(this);
     }
 
-    public boolean sleepOn(Vector3 pos) {
+    public boolean sleepOn(BlockVector3 pos) {
         if (!this.isOnline()) {
             return false;
         }
@@ -902,7 +902,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.setDataProperty(new PositionEntityData(DATA_PLAYER_BED_POSITION, (int) pos.x, (int) pos.y, (int) pos.z));
         this.setDataFlag(DATA_PLAYER_FLAGS, DATA_PLAYER_FLAG_SLEEP, true);
 
-        this.setSpawn(pos);
+        this.setSpawn(new Vector3());
 
         this.level.sleepTicks = 60;
 
@@ -1124,10 +1124,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             int maxY = NukkitMath.ceilDouble(bb.maxY);
             int maxZ = NukkitMath.ceilDouble(bb.maxZ);
 
+            BlockVector3 blockPos = new BlockVector3();
+
             for (int z = minZ; z <= maxZ; ++z) {
+                blockPos.z = z;
                 for (int x = minX; x <= maxX; ++x) {
+                    blockPos.x = x;
                     for (int y = minY; y <= maxY; ++y) {
-                        Block block = this.level.getBlock(this.temporalVector.setComponents(x, y, z));
+                        blockPos.y = y;
+                        Block block = this.level.getBlock(blockPos);
 
                         if (!block.canPassThrough() && block.collidesWithBB(realBB)) {
                             onGround = true;
@@ -2040,14 +2045,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     UseItemPacket useItemPacket = (UseItemPacket) packet;
 
-                    Vector3 blockVector = new Vector3(useItemPacket.x, useItemPacket.y, useItemPacket.z);
+                    Vector3 vector = new Vector3(useItemPacket.x, useItemPacket.y, useItemPacket.z);
+                    BlockVector3 blockVector = new BlockVector3(vector);
 
                     this.craftingType = 0;
 
                     if (useItemPacket.face >= 0 && useItemPacket.face <= 5) {
                         this.setDataFlag(Player.DATA_FLAGS, Player.DATA_FLAG_ACTION, false);
 
-                        if (!this.canInteract(blockVector.add(0.5, 0.5, 0.5), 13)) {
+                        if (!this.canInteract(vector.add(0.5, 0.5, 0.5), 13)) {
                         } else if (this.isCreative()) {
                             Item i = this.inventory.getItemInHand();
                             if (this.level.useItemOn(blockVector, i, useItemPacket.face, useItemPacket.fx, useItemPacket.fy, useItemPacket.fz, this) != null) {
@@ -2070,7 +2076,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                         this.inventory.sendHeldItem(this);
 
-                        if (blockVector.distanceSquared(this) > 10000) {
+                        if (vector.distanceSquared(this) > 10000) {
                             break;
                         }
 
@@ -2105,7 +2111,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             item = this.inventory.getItemInHand();
                         }
 
-                        PlayerInteractEvent playerInteractEvent = new PlayerInteractEvent(this, item, aimPos, useItemPacket.face, PlayerInteractEvent.RIGHT_CLICK_AIR);
+                        PlayerInteractEvent playerInteractEvent = new PlayerInteractEvent(this, item, aimPos, null, useItemPacket.face, PlayerInteractEvent.RIGHT_CLICK_AIR);
 
                         this.server.getPluginManager().callEvent(playerInteractEvent);
 
@@ -2270,7 +2276,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     ((PlayerActionPacket) packet).entityId = this.id;
-                    Vector3 pos = new Vector3(((PlayerActionPacket) packet).x, ((PlayerActionPacket) packet).y, ((PlayerActionPacket) packet).z);
+                    BlockVector3 pos = new BlockVector3(((PlayerActionPacket) packet).x, ((PlayerActionPacket) packet).y, ((PlayerActionPacket) packet).z);
 
                     switch (((PlayerActionPacket) packet).action) {
                         case PlayerActionPacket.ACTION_START_BREAK:
@@ -2278,7 +2284,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                 break;
                             }
                             Block target = this.level.getBlock(pos);
-                            PlayerInteractEvent playerInteractEvent = new PlayerInteractEvent(this, this.inventory.getItemInHand(), target, ((PlayerActionPacket) packet).face, target.getId() == 0 ? PlayerInteractEvent.LEFT_CLICK_AIR : PlayerInteractEvent.LEFT_CLICK_BLOCK);
+                            PlayerInteractEvent playerInteractEvent = new PlayerInteractEvent(this, this.inventory.getItemInHand(), new Vector3(target.x, target.y, target.z), target, ((PlayerActionPacket) packet).face, target.getId() == 0 ? PlayerInteractEvent.LEFT_CLICK_AIR : PlayerInteractEvent.LEFT_CLICK_BLOCK);
                             this.getServer().getPluginManager().callEvent(playerInteractEvent);
                             if (playerInteractEvent.isCancelled()) {
                                 this.inventory.sendHeldItem(this);
@@ -2461,7 +2467,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
                     this.craftingType = 0;
 
-                    Vector3 vector = new Vector3(((RemoveBlockPacket) packet).x, ((RemoveBlockPacket) packet).y, ((RemoveBlockPacket) packet).z);
+                    vector = new Vector3(((RemoveBlockPacket) packet).x, ((RemoveBlockPacket) packet).y, ((RemoveBlockPacket) packet).z);
+                    blockVector = new BlockVector3(vector);
 
                     if (this.isCreative()) {
                         item = this.inventory.getItemInHand();
@@ -2483,8 +2490,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     this.inventory.sendContents(this);
-                    Block target = this.level.getBlock(vector);
-                    BlockEntity blockEntity = this.level.getBlockEntity(vector);
+                    Block target = this.level.getBlock(blockVector);
+                    BlockEntity blockEntity = this.level.getBlockEntity(blockVector);
 
                     this.level.sendBlocks(new Player[]{this}, new Block[]{target}, UpdateBlockPacket.FLAG_ALL_PRIORITY);
 
@@ -3137,7 +3144,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     BlockEntityDataPacket blockEntityDataPacket = (BlockEntityDataPacket) packet;
                     this.craftingType = 0;
 
-                    pos = new Vector3(blockEntityDataPacket.x, blockEntityDataPacket.y, blockEntityDataPacket.z);
+                    pos = new BlockVector3(blockEntityDataPacket.x, blockEntityDataPacket.y, blockEntityDataPacket.z);
                     if (pos.distanceSquared(this) > 10000) {
                         break;
                     }
@@ -3195,8 +3202,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 //region ItemFrameDropItemPacket
                 case ProtocolInfo.ITEM_FRAME_DROP_ITEM_PACKET:
                     ItemFrameDropItemPacket itemFrameDropItemPacket = (ItemFrameDropItemPacket) packet;
-                    Vector3 vector3 = this.temporalVector.setComponents(itemFrameDropItemPacket.x, itemFrameDropItemPacket.y, itemFrameDropItemPacket.z);
-                    BlockEntity blockEntityItemFrame = this.level.getBlockEntity(vector3);
+                    Vector3 vector3 = new Vector3(itemFrameDropItemPacket.x + 0.5, itemFrameDropItemPacket.y, itemFrameDropItemPacket.z + 0.5);
+                    BlockEntity blockEntityItemFrame = this.level.getBlockEntity(this.blockTemporalVector.setComponents(itemFrameDropItemPacket.x, itemFrameDropItemPacket.y, itemFrameDropItemPacket.z));
                     BlockEntityItemFrame itemFrame = (BlockEntityItemFrame) blockEntityItemFrame;
                     if (itemFrame != null) {
                         Block block = itemFrame.getBlock();
@@ -3205,7 +3212,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.server.getPluginManager().callEvent(itemFrameDropItemEvent);
                         if (!itemFrameDropItemEvent.isCancelled()) {
                             if (itemDrop.getId() != Item.AIR) {
-                                vector3 = this.temporalVector.setComponents(itemFrame.x + 0.5, itemFrame.y, itemFrame.z + 0.5);
                                 this.level.dropItem(vector3, itemDrop);
                                 itemFrame.setItem(new ItemBlock(new BlockAir()));
                                 itemFrame.setItemRotation(0);
@@ -3754,7 +3760,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         } else if (this.allowFlight && source.getCause() == EntityDamageEvent.CAUSE_FALL) {
             source.setCancelled();
         } else if (source.getCause() == EntityDamageEvent.CAUSE_FALL) {
-            if (this.getLevel().getBlock(this.getPosition().floor().add(0.5, -1, 0.5)).getId() == Block.SLIME_BLOCK) {
+            if (this.getLevel().getBlock(new BlockVector3(this.getPosition().floor().add(0.5, -1, 0.5))).getId() == Block.SLIME_BLOCK) {
                 if (!this.isSneaking()) {
                     source.setCancelled();
                     this.resetFallDistance();
@@ -4047,7 +4053,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     @Override
-    public void onBlockChanged(Vector3 block) {
+    public void onBlockChanged(BlockVector3 block) {
 
     }
 

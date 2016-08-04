@@ -49,18 +49,18 @@ public class BlockRedstone extends BlockSolid {
 
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
-        this.getLevel().setBlock(block, this, true, false);
+        this.level.setBlock(block, this, true, false);
         Redstone.active(this);
-        this.getLevel().updateAllLight(this);
-        this.getLevel().updateAroundRedstone(this);
-        this.getLevel().updateAround(block);
+        this.level.updateAllLight(this);
+        this.level.updateAroundRedstone(this);
+        this.level.updateAround(block);
         return true;
     }
 
     @Override
     public boolean onBreak(Item item) {
         int level = this.getPowerLevel();
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
+        this.level.setBlock(this, new BlockAir(), true, true);
         Redstone.deactive(this, level);
         return true;
     }

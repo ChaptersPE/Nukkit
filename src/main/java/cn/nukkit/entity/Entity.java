@@ -118,6 +118,7 @@ public abstract class Entity extends Location implements Metadatable {
     public double motionZ;
 
     public Vector3 temporalVector;
+    public BlockVector3 blockTemporalVector;
     public double lastMotionX;
     public double lastMotionY;
     public double lastMotionZ;
@@ -243,6 +244,7 @@ public abstract class Entity extends Location implements Metadatable {
 
         this.isPlayer = this instanceof Player;
         this.temporalVector = new Vector3();
+        this.blockTemporalVector = new BlockVector3();
 
         this.id = Entity.entityCount++;
         this.justCreated = true;
@@ -1021,10 +1023,10 @@ public abstract class Entity extends Location implements Metadatable {
         }
 
         if (fallDistance > 1) {
-            Block down = this.level.getBlock(this.temporalVector.setComponents(getFloorX(), getFloorY() - 1, getFloorZ()));
+            Block down = this.level.getBlock(this.blockTemporalVector.setComponents(getFloorX(), getFloorY() - 1, getFloorZ()));
 
             if (down.getId() == Item.FARMLAND) {
-                this.level.setBlock(this.temporalVector.setComponents(down.x, down.y, down.z), new BlockDirt(), true, true);
+                this.level.setBlock(this.blockTemporalVector.setComponents(down.x, down.y, down.z), new BlockDirt(), true, true);
             }
         }
     }
@@ -1077,7 +1079,7 @@ public abstract class Entity extends Location implements Metadatable {
 
     public boolean isInsideOfWater() {
         double y = this.y + this.getEyeHeight();
-        Block block = this.level.getBlock(this.temporalVector.setComponents(NukkitMath.floorDouble(this.x), NukkitMath.floorDouble(y), NukkitMath.floorDouble(this.z)));
+        Block block = this.level.getBlock(this.blockTemporalVector.setComponents(NukkitMath.floorDouble(this.x), NukkitMath.floorDouble(y), NukkitMath.floorDouble(this.z)));
 
         if (block instanceof BlockWater) {
             double f = (block.y + 1) - (((BlockWater) block).getFluidHeightPercent() - 0.1111111);
@@ -1090,7 +1092,7 @@ public abstract class Entity extends Location implements Metadatable {
     public boolean isInsideOfSolid() {
         double y = this.y + this.getEyeHeight();
         Block block = this.level.getBlock(
-                this.temporalVector.setComponents(
+                this.blockTemporalVector.setComponents(
                         NukkitMath.floorDouble(this.x),
                         NukkitMath.floorDouble(y),
                         NukkitMath.floorDouble(this.z))
@@ -1285,7 +1287,7 @@ public abstract class Entity extends Location implements Metadatable {
             for (int z = minZ; z <= maxZ; ++z) {
                 for (int x = minX; x <= maxX; ++x) {
                     for (int y = minY; y <= maxY; ++y) {
-                        Block block = this.level.getBlock(this.temporalVector.setComponents(x, y, z));
+                        Block block = this.level.getBlock(this.blockTemporalVector.setComponents(x, y, z));
                         if (block.hasEntityCollision()) {
                             this.blocksAround.add(block);
                         }

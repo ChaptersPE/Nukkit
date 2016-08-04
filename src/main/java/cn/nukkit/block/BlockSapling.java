@@ -51,7 +51,7 @@ public class BlockSapling extends BlockFlowable {
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         Block down = this.getSide(Block.SIDE_DOWN);
         if (down.getId() == Block.GRASS || down.getId() == Block.DIRT || down.getId() == Block.FARMLAND || down.getId() == Block.PODZOL) {
-            this.getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
             return true;
         }
 
@@ -65,30 +65,30 @@ public class BlockSapling extends BlockFlowable {
 
     public boolean onActivate(Item item, Player player) {
         if (item.getId() == Item.DYE && item.getDamage() == 0x0F) { //BoneMeal
-            ObjectTree.growTree(this.getLevel(), (int) this.x, (int) this.y, (int) this.z, new NukkitRandom(), this.meta & 0x07);
+            ObjectTree.growTree(this.level, (int) this.x, (int) this.y, (int) this.z, new NukkitRandom(), this.meta & 0x07);
             if ((player.gamemode & 0x01) == 0) {
                 item.count--;
             }
 
             return true;
         }
-        this.getLevel().loadChunk((int) this.x >> 4, (int) this.z >> 4);
+        this.level.loadChunk((int) this.x >> 4, (int) this.z >> 4);
         return false;
     }
 
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(0).isTransparent()) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) { //Growth
             if (new NukkitRandom().nextRange(1, 7) == 1) {
                 if ((this.meta & 0x08) == 0x08) {
-                    ObjectTree.growTree(this.getLevel(), (int) this.x, (int) this.y, (int) this.z, new NukkitRandom(), this.meta & 0x07);
+                    ObjectTree.growTree(this.level, (int) this.x, (int) this.y, (int) this.z, new NukkitRandom(), this.meta & 0x07);
                 } else {
                     this.meta |= 0x08;
-                    this.getLevel().setBlock(this, this, true);
+                    this.level.setBlock(this, this, true);
                     return Level.BLOCK_UPDATE_RANDOM;
                 }
             } else {

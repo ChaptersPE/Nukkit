@@ -86,7 +86,7 @@ public class BlockChest extends BlockTransparent {
             }
             Block c = this.getSide(side);
             if (c instanceof BlockChest && c.getDamage() == this.meta) {
-                BlockEntity blockEntity = this.getLevel().getBlockEntity(c);
+                BlockEntity blockEntity = this.level.getBlockEntity(c);
                 if (blockEntity instanceof BlockEntityChest && !((BlockEntityChest) blockEntity).isPaired()) {
                     chest = (BlockEntityChest) blockEntity;
                     break;
@@ -94,13 +94,13 @@ public class BlockChest extends BlockTransparent {
             }
         }
 
-        this.getLevel().setBlock(block, this, true, true);
+        this.level.setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag("")
                 .putList(new ListTag<>("Items"))
                 .putString("id", BlockEntity.CHEST)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z);
+                .putInt("x", this.x)
+                .putInt("y", this.y)
+                .putInt("z", this.z);
 
         if (item.hasCustomName()) {
             nbt.putString("CustomName", item.getCustomName());
@@ -115,7 +115,7 @@ public class BlockChest extends BlockTransparent {
             }
         }
 
-        BlockEntity blockEntity = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        BlockEntity blockEntity = new BlockEntityChest(this.level.getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
 
         if (chest != null) {
             chest.pairWith(((BlockEntityChest) blockEntity));
@@ -127,11 +127,11 @@ public class BlockChest extends BlockTransparent {
 
     @Override
     public boolean onBreak(Item item) {
-        BlockEntity t = this.getLevel().getBlockEntity(this);
+        BlockEntity t = this.level.getBlockEntity(this);
         if (t instanceof BlockEntityChest) {
             ((BlockEntityChest) t).unpair();
         }
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
+        this.level.setBlock(this, new BlockAir(), true, true);
 
         return true;
     }
@@ -144,7 +144,7 @@ public class BlockChest extends BlockTransparent {
                 return true;
             }
 
-            BlockEntity t = this.getLevel().getBlockEntity(this);
+            BlockEntity t = this.level.getBlockEntity(this);
             BlockEntityChest chest;
             if (t instanceof BlockEntityChest) {
                 chest = (BlockEntityChest) t;
@@ -155,7 +155,7 @@ public class BlockChest extends BlockTransparent {
                         .putInt("x", (int) this.x)
                         .putInt("y", (int) this.y)
                         .putInt("z", (int) this.z);
-                chest = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                chest = new BlockEntityChest(this.level.getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
             }
 
             if (chest.namedTag.contains("Lock") && chest.namedTag.get("Lock") instanceof StringTag) {

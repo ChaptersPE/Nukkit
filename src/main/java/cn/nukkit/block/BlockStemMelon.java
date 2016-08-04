@@ -33,7 +33,7 @@ public class BlockStemMelon extends BlockCrops {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getSide(0).isTransparent()) {
-                this.getLevel().useBreakOn(this);
+                this.level.useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
@@ -45,7 +45,7 @@ public class BlockStemMelon extends BlockCrops {
                     BlockGrowEvent ev = new BlockGrowEvent(this, block);
                     Server.getInstance().getPluginManager().callEvent(ev);
                     if (!ev.isCancelled()) {
-                        this.getLevel().setBlock(this, ev.getNewState(), true);
+                        this.level.setBlock(this, ev.getNewState(), true);
                     }
                     return Level.BLOCK_UPDATE_RANDOM;
                 } else {
@@ -61,7 +61,7 @@ public class BlockStemMelon extends BlockCrops {
                         BlockGrowEvent ev = new BlockGrowEvent(side, new BlockMelon());
                         Server.getInstance().getPluginManager().callEvent(ev);
                         if (!ev.isCancelled()) {
-                            this.getLevel().setBlock(side, ev.getNewState(), true);
+                            this.level.setBlock(side, ev.getNewState(), true);
                         }
                     }
                 }

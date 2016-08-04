@@ -60,7 +60,7 @@ public class BlockCake extends BlockTransparent {
     @Override
     public boolean place(Item item, Block block, Block target, int face, double fx, double fy, double fz, Player player) {
         if (getSide(0).getId() != Block.AIR) {
-            getLevel().setBlock(block, this, true, true);
+            this.level.setBlock(block, this, true, true);
 
             return true;
         }
@@ -71,7 +71,7 @@ public class BlockCake extends BlockTransparent {
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (getSide(0).getId() == Block.AIR) {
-                getLevel().setBlock(this, new BlockAir(), true);
+                this.level.setBlock(this, new BlockAir(), true);
 
                 return Level.BLOCK_UPDATE_NORMAL;
             }
@@ -90,10 +90,10 @@ public class BlockCake extends BlockTransparent {
         if (player != null && player.getFoodData().getLevel() < player.getFoodData().getMaxLevel()) {
             if (meta <= 0x06) meta++;
             if (meta >= 0x06) {
-                getLevel().setBlock(this, new BlockAir(), true);
+                this.level.setBlock(this, new BlockAir(), true);
             } else {
                 Food.getByRelative(this).eatenBy(player);
-                getLevel().setBlock(this, this, true);
+                this.level.setBlock(this, this, true);
             }
             return true;
         }

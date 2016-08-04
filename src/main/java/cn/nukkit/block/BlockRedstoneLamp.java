@@ -48,7 +48,7 @@ public class BlockRedstoneLamp extends BlockSolid {
         if ((type == Level.BLOCK_UPDATE_NORMAL || type == Level.BLOCK_UPDATE_SCHEDULED) && this.getNeighborPowerLevel() > 0) {
             int level = this.getPowerLevel();
             Redstone.deactive(this, level);
-            this.getLevel().setBlock(this, new BlockLitRedstoneLamp());
+            this.level.setBlock(this, new BlockLitRedstoneLamp());
         }
         return 0;
     }
