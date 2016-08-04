@@ -11,7 +11,7 @@ import cn.nukkit.level.format.leveldb.key.FlagsKey;
 import cn.nukkit.level.format.leveldb.key.TerrainKey;
 import cn.nukkit.level.format.leveldb.key.VersionKey;
 import cn.nukkit.level.generator.Generator;
-import cn.nukkit.math.ChunkPosition;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -31,7 +31,7 @@ import java.util.*;
  */
 public class LevelDB implements LevelProvider {
 
-    protected Map<ChunkPosition, Chunk> chunks = new HashMap<>();
+    protected Map<IntVector2, Chunk> chunks = new HashMap<>();
 
     protected DB db;
 
@@ -227,13 +227,13 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public Map<ChunkPosition, Chunk> getLoadedChunks() {
+    public Map<IntVector2, Chunk> getLoadedChunks() {
         return this.chunks;
     }
 
     @Override
     public boolean isChunkLoaded(int X, int Z) {
-        return this.chunks.containsKey(new ChunkPosition(X, Z));
+        return this.chunks.containsKey(new IntVector2(X, Z));
     }
 
     @Override
@@ -250,7 +250,7 @@ public class LevelDB implements LevelProvider {
 
     @Override
     public boolean loadChunk(int chunkX, int chunkZ, boolean create) {
-        ChunkPosition index = new ChunkPosition(chunkX, chunkZ);
+        IntVector2 index = new IntVector2(chunkX, chunkZ);
         if (this.chunks.containsKey(index)) {
             return true;
         }
@@ -303,7 +303,7 @@ public class LevelDB implements LevelProvider {
 
     @Override
     public boolean unloadChunk(int X, int Z, boolean safe) {
-        ChunkPosition index = new ChunkPosition(X, Z);
+        IntVector2 index = new IntVector2(X, Z);
         Chunk chunk = this.chunks.containsKey(index) ? this.chunks.get(index) : null;
         if (chunk != null && chunk.unload(false, safe)) {
             this.chunks.remove(index);
@@ -327,7 +327,7 @@ public class LevelDB implements LevelProvider {
 
     @Override
     public Chunk getChunk(int chunkX, int chunkZ, boolean create) {
-        ChunkPosition index = new ChunkPosition(chunkX, chunkZ);
+        IntVector2 index = new IntVector2(chunkX, chunkZ);
         if (this.chunks.containsKey(index)) {
             return this.chunks.get(index);
         } else {
@@ -349,7 +349,7 @@ public class LevelDB implements LevelProvider {
 
         chunk.setX(chunkX);
         chunk.setZ(chunkZ);
-        ChunkPosition index = new ChunkPosition(chunkX, chunkZ);
+        IntVector2 index = new IntVector2(chunkX, chunkZ);
 
         if (this.chunks.containsKey(index) && !this.chunks.get(index).equals(chunk)) {
             this.unloadChunk(chunkX, chunkZ, false);

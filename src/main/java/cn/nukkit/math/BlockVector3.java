@@ -1,6 +1,6 @@
 package cn.nukkit.math;
 
-public class BlockVector3 {
+final public class BlockVector3 {
 	public static final int SIDE_DOWN = 0;
 	public static final int SIDE_UP = 1;
 	public static final int SIDE_NORTH = 2;

@@ -62,7 +62,6 @@ import cn.nukkit.permission.Permission;
 import cn.nukkit.permission.PermissionAttachment;
 import cn.nukkit.permission.PermissionAttachmentInfo;
 import cn.nukkit.plugin.Plugin;
-import cn.nukkit.potion.Effect;
 import cn.nukkit.potion.Potion;
 import cn.nukkit.timings.Timing;
 import cn.nukkit.timings.Timings;
@@ -152,10 +151,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     protected float stepHeight = 0.6f;
 
-    public Map<ChunkPosition, Boolean> usedChunks = new HashMap<>();
+    public Map<IntVector2, Boolean> usedChunks = new HashMap<>();
 
     protected int chunkLoadCount = 0;
-    protected Map<ChunkPosition, Integer> loadQueue = new HashMap<>();
+    protected Map<IntVector2, Integer> loadQueue = new HashMap<>();
     protected int nextChunkOrderRun = 5;
 
     protected Map<UUID, Player> hiddenPlayers = new HashMap<>();
@@ -506,7 +505,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected boolean switchLevel(Level targetLevel) {
         Level oldLevel = this.level;
         if (super.switchLevel(targetLevel)) {
-            for (ChunkPosition index : new ArrayList<>(this.usedChunks.keySet())) {
+            for (IntVector2 index : new ArrayList<>(this.usedChunks.keySet())) {
                 Chunk.Entry chunkEntry = Level.getChunkXZ(index);
                 int chunkX = chunkEntry.chunkX;
                 int chunkZ = chunkEntry.chunkZ;
@@ -529,7 +528,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public void unloadChunk(int x, int z, Level level) {
         level = level == null ? this.level : level;
-        ChunkPosition index = new ChunkPosition(x, z);
+        IntVector2 index = new IntVector2(x, z);
         if (this.usedChunks.containsKey(index)) {
             for (Entity entity : level.getChunkEntities(x, z).values()) {
                 if (entity != this) {
@@ -556,7 +555,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        this.usedChunks.put(new ChunkPosition(x, z), true);
+        this.usedChunks.put(new IntVector2(x, z), true);
         this.chunkLoadCount++;
 
         this.dataPacket(packet);
@@ -579,7 +578,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        this.usedChunks.put(new ChunkPosition(x, z), true);
+        this.usedChunks.put(new IntVector2(x, z), true);
         this.chunkLoadCount++;
 
         FullChunkDataPacket pk = new FullChunkDataPacket();
@@ -608,16 +607,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         int count = 0;
 
-        List<Map.Entry<ChunkPosition, Integer>> entryList = new ArrayList<>(this.loadQueue.entrySet());
-        entryList.sort(new Comparator<Map.Entry<ChunkPosition, Integer>>() {
+        List<Map.Entry<IntVector2, Integer>> entryList = new ArrayList<>(this.loadQueue.entrySet());
+        entryList.sort(new Comparator<Map.Entry<IntVector2, Integer>>() {
             @Override
-            public int compare(Map.Entry<ChunkPosition, Integer> o1, Map.Entry<ChunkPosition, Integer> o2) {
+            public int compare(Map.Entry<IntVector2, Integer> o1, Map.Entry<IntVector2, Integer> o2) {
                 return o1.getValue() - o2.getValue();
             }
         });
 
-        for (Map.Entry<ChunkPosition, Integer> entry : entryList) {
-            ChunkPosition index = entry.getKey();
+        for (Map.Entry<IntVector2, Integer> entry : entryList) {
+            IntVector2 index = entry.getKey();
             if (count >= this.chunksPerTick) {
                 break;
             }
@@ -706,7 +705,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.noDamageTicks = 60;
 
-        for (ChunkPosition index : this.usedChunks.keySet()) {
+        for (IntVector2 index : this.usedChunks.keySet()) {
             Chunk.Entry chunkEntry = Level.getChunkXZ(index);
             int chunkX = chunkEntry.chunkX;
             int chunkZ = chunkEntry.chunkZ;
@@ -753,8 +752,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.nextChunkOrderRun = 200;
 
-        Map<ChunkPosition, Integer> newOrder = new HashMap<>();
-        Map<ChunkPosition, Boolean> lastChunk = new HashMap<>(this.usedChunks);
+        Map<IntVector2, Integer> newOrder = new HashMap<>();
+        Map<IntVector2, Boolean> lastChunk = new HashMap<>(this.usedChunks);
 
         int centerX = (int) this.x >> 4;
         int centerZ = (int) this.z >> 4;
@@ -766,8 +765,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 int chunkZ = z + centerZ;
                 int distance = (int) Math.sqrt((double) x * x + (double) z * z);
                 if (distance <= this.chunkRadius) {
-                    ChunkPosition index;
-                    if (!(this.usedChunks.containsKey(index = new ChunkPosition(chunkX, chunkZ))) || !this.usedChunks.get(index)) {
+                    IntVector2 index;
+                    if (!(this.usedChunks.containsKey(index = new IntVector2(chunkX, chunkZ))) || !this.usedChunks.get(index)) {
                         newOrder.put(index, distance);
                         count++;
                     }
@@ -776,7 +775,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
         }
 
-        for (ChunkPosition index : new ArrayList<>(lastChunk.keySet())) {
+        for (IntVector2 index : new ArrayList<>(lastChunk.keySet())) {
             Chunk.Entry entry = Level.getChunkXZ(index);
             this.unloadChunk(entry.chunkX, entry.chunkZ);
         }
@@ -3375,7 +3374,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 this.removeWindow(window);
             }
 
-            for (ChunkPosition index : new ArrayList<>(this.usedChunks.keySet())) {
+            for (IntVector2 index : new ArrayList<>(this.usedChunks.keySet())) {
                 Chunk.Entry entry = Level.getChunkXZ(index);
                 this.level.unregisterChunkLoader(this, entry.chunkX, entry.chunkZ);
                 this.usedChunks.remove(index);
@@ -3870,7 +3869,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             for (int X = -1; X <= 1; ++X) {
                 for (int Z = -1; Z <= 1; ++Z) {
-                    ChunkPosition index = new ChunkPosition(chunkX + X, chunkZ + Z);
+                    IntVector2 index = new IntVector2(chunkX + X, chunkZ + Z);
                     if (!this.usedChunks.containsKey(index) || !this.usedChunks.get(index)) {
                         return false;
                     }
@@ -4029,7 +4028,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     @Override
     public void onChunkChanged(FullChunk chunk) {
-        this.loadQueue.put(new ChunkPosition(chunk.getX(), chunk.getZ()), Math.abs(((int) this.x >> 4) - chunk.getX()) + Math.abs(((int) this.z >> 4) - chunk.getZ()));
+        this.loadQueue.put(new IntVector2(chunk.getX(), chunk.getZ()), Math.abs(((int) this.x >> 4) - chunk.getX()) + Math.abs(((int) this.z >> 4) - chunk.getZ()));
     }
 
     @Override

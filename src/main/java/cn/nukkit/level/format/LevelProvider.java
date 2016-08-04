@@ -2,7 +2,7 @@ package cn.nukkit.level.format;
 
 import cn.nukkit.level.Level;
 import cn.nukkit.level.format.generic.BaseFullChunk;
-import cn.nukkit.math.ChunkPosition;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.AsyncTask;
 
@@ -84,7 +84,7 @@ public interface LevelProvider {
 
     void setSpawn(Vector3 pos);
 
-    Map<ChunkPosition, ? extends FullChunk> getLoadedChunks();
+    Map<IntVector2, ? extends FullChunk> getLoadedChunks();
 
     void doGarbageCollection();
 
