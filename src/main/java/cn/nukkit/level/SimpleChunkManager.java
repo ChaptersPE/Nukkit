@@ -2,6 +2,7 @@ package cn.nukkit.level;
 
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.generic.BaseFullChunk;
+import cn.nukkit.math.ChunkPosition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Nukkit Project
  */
 public class SimpleChunkManager implements ChunkManager {
-    protected Map<String, FullChunk> chunks = new ConcurrentHashMap<>();
+    protected Map<ChunkPosition, FullChunk> chunks = new ConcurrentHashMap<>();
 
     protected final long seed;
 
@@ -56,7 +57,7 @@ public class SimpleChunkManager implements ChunkManager {
 
     @Override
     public BaseFullChunk getChunk(int chunkX, int chunkZ) {
-        String index = Level.chunkHash(chunkX, chunkZ);
+        ChunkPosition index = new ChunkPosition(chunkX, chunkZ);
         return this.chunks.containsKey(index) ? (BaseFullChunk) this.chunks.get(index) : null;
     }
 
@@ -68,10 +69,10 @@ public class SimpleChunkManager implements ChunkManager {
     @Override
     public void setChunk(int chunkX, int chunkZ, BaseFullChunk chunk) {
         if (chunk == null) {
-            this.chunks.remove(Level.chunkHash(chunkX, chunkZ));
+            this.chunks.remove(new ChunkPosition(chunkX, chunkZ));
             return;
         }
-        this.chunks.put(Level.chunkHash(chunkX, chunkZ), chunk);
+        this.chunks.put(new ChunkPosition(chunkX, chunkZ), chunk);
     }
 
     public void cleanChunks() {

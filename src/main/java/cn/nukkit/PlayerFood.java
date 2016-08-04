@@ -168,6 +168,29 @@ public class PlayerFood {
 
     }
 
+    public void movementUpdate(double distance) {
+        if ((player.isSurvival() || player.isAdventure())/* && !this.getRiddingOn() instanceof Entity*/) {
+
+            //UpdateFoodExpLevel
+            if (distance >= 0.05) {
+                double jump = 0;
+                double swimming = player.isInsideOfWater() ? 0.015 * distance : 0;
+                if (swimming != 0) distance = 0;
+                if (player.isSprinting()) {  //Running
+                    if (player.inAirTicks == 3 && swimming == 0) {
+                        jump = 0.7;
+                    }
+                    updateFoodExpLevel(0.1 * distance + jump + swimming);
+                } else {
+                    if (player.inAirTicks == 3 && swimming == 0) {
+                        jump = 0.2;
+                    }
+                    updateFoodExpLevel(0.01 * distance + jump + swimming);
+                }
+            }
+        }
+    }
+
     public void updateFoodExpLevel(double use) {
         if (!this.getPlayer().isFoodEnabled()) return;
         if (Server.getInstance().getDifficulty() == 0) return;

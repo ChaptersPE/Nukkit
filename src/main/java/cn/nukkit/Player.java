@@ -75,8 +75,6 @@ import java.nio.ByteOrder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-//import cn.nukkit.entity.Item;
-
 
 /**
  * author: MagicDroidX & Box
@@ -154,10 +152,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     protected float stepHeight = 0.6f;
 
-    public Map<String, Boolean> usedChunks = new HashMap<>();
+    public Map<ChunkPosition, Boolean> usedChunks = new HashMap<>();
 
     protected int chunkLoadCount = 0;
-    protected Map<String, Integer> loadQueue = new HashMap<>();
+    protected Map<ChunkPosition, Integer> loadQueue = new HashMap<>();
     protected int nextChunkOrderRun = 5;
 
     protected Map<UUID, Player> hiddenPlayers = new HashMap<>();
@@ -508,7 +506,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected boolean switchLevel(Level targetLevel) {
         Level oldLevel = this.level;
         if (super.switchLevel(targetLevel)) {
-            for (String index : new ArrayList<>(this.usedChunks.keySet())) {
+            for (ChunkPosition index : new ArrayList<>(this.usedChunks.keySet())) {
                 Chunk.Entry chunkEntry = Level.getChunkXZ(index);
                 int chunkX = chunkEntry.chunkX;
                 int chunkZ = chunkEntry.chunkZ;
@@ -531,7 +529,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public void unloadChunk(int x, int z, Level level) {
         level = level == null ? this.level : level;
-        String index = Level.chunkHash(x, z);
+        ChunkPosition index = new ChunkPosition(x, z);
         if (this.usedChunks.containsKey(index)) {
             for (Entity entity : level.getChunkEntities(x, z).values()) {
                 if (entity != this) {
@@ -558,7 +556,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        this.usedChunks.put(Level.chunkHash(x, z), true);
+        this.usedChunks.put(new ChunkPosition(x, z), true);
         this.chunkLoadCount++;
 
         this.dataPacket(packet);
@@ -581,7 +579,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        this.usedChunks.put(Level.chunkHash(x, z), true);
+        this.usedChunks.put(new ChunkPosition(x, z), true);
         this.chunkLoadCount++;
 
         FullChunkDataPacket pk = new FullChunkDataPacket();
@@ -610,16 +608,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         int count = 0;
 
-        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(this.loadQueue.entrySet());
-        entryList.sort(new Comparator<Map.Entry<String, Integer>>() {
+        List<Map.Entry<ChunkPosition, Integer>> entryList = new ArrayList<>(this.loadQueue.entrySet());
+        entryList.sort(new Comparator<Map.Entry<ChunkPosition, Integer>>() {
             @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+            public int compare(Map.Entry<ChunkPosition, Integer> o1, Map.Entry<ChunkPosition, Integer> o2) {
                 return o1.getValue() - o2.getValue();
             }
         });
 
-        for (Map.Entry<String, Integer> entry : entryList) {
-            String index = entry.getKey();
+        for (Map.Entry<ChunkPosition, Integer> entry : entryList) {
+            ChunkPosition index = entry.getKey();
             if (count >= this.chunksPerTick) {
                 break;
             }
@@ -708,7 +706,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.noDamageTicks = 60;
 
-        for (String index : this.usedChunks.keySet()) {
+        for (ChunkPosition index : this.usedChunks.keySet()) {
             Chunk.Entry chunkEntry = Level.getChunkXZ(index);
             int chunkX = chunkEntry.chunkX;
             int chunkZ = chunkEntry.chunkZ;
@@ -755,8 +753,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.nextChunkOrderRun = 200;
 
-        Map<String, Integer> newOrder = new HashMap<>();
-        Map<String, Boolean> lastChunk = new HashMap<>(this.usedChunks);
+        Map<ChunkPosition, Integer> newOrder = new HashMap<>();
+        Map<ChunkPosition, Boolean> lastChunk = new HashMap<>(this.usedChunks);
 
         int centerX = (int) this.x >> 4;
         int centerZ = (int) this.z >> 4;
@@ -768,8 +766,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 int chunkZ = z + centerZ;
                 int distance = (int) Math.sqrt((double) x * x + (double) z * z);
                 if (distance <= this.chunkRadius) {
-                    String index;
-                    if (!(this.usedChunks.containsKey(index = Level.chunkHash(chunkX, chunkZ))) || !this.usedChunks.get(index)) {
+                    ChunkPosition index;
+                    if (!(this.usedChunks.containsKey(index = new ChunkPosition(chunkX, chunkZ))) || !this.usedChunks.get(index)) {
                         newOrder.put(index, distance);
                         count++;
                     }
@@ -778,7 +776,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
         }
 
-        for (String index : new ArrayList<>(lastChunk.keySet())) {
+        for (ChunkPosition index : new ArrayList<>(lastChunk.keySet())) {
             Chunk.Entry entry = Level.getChunkXZ(index);
             this.unloadChunk(entry.chunkX, entry.chunkZ);
         }
@@ -1245,171 +1243,150 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
-    protected void processMovement(int tickDiff) {
-        if (!this.isAlive() || !this.spawned || this.newPosition == null || this.teleportPosition != null) {
-            return;
-        }
-
-
-        Vector3 newPos = this.newPosition;
-        double distanceSquared = newPos.distanceSquared(this);
-
-        boolean revert = false;
-
-        if ((distanceSquared / ((double) (tickDiff * tickDiff))) > 100 && (newPos.y - this.y) > -5) {
-            revert = true;
-        } else {
-            if (this.chunk == null || !this.chunk.isGenerated()) {
-                BaseFullChunk chunk = this.level.getChunk((int) newPos.x >> 4, (int) newPos.z >> 4, false);
-                if (chunk == null || !chunk.isGenerated()) {
-                    revert = true;
-                    this.nextChunkOrderRun = 0;
-                } else {
-                    if (this.chunk != null) {
-                        this.chunk.removeEntity(this);
-                    }
-                    this.chunk = chunk;
-                }
-            }
-        }
-
-        Vector2 newPosV2 = new Vector2(newPos.x, newPos.z);
-        double distance = newPosV2.distance(this.x, this.z);
-
-        if (!revert && distanceSquared != 0) {
-            double dx = newPos.x - this.x;
-            double dy = newPos.y - this.y;
-            double dz = newPos.z - this.z;
-
-            this.move(dx, dy, dz);
-
-            double diffX = this.x - newPos.x;
-            double diffY = this.y - newPos.y;
-            double diffZ = this.z - newPos.z;
-
-            double yS = 0.5 + this.ySize;
-            if (diffY >= -yS || diffY <= yS) {
-                diffY = 0;
-            }
-
-            double diff = (diffX * diffX + diffY * diffY + diffZ * diffZ) / ((double) (tickDiff * tickDiff));
-
-            if (this.isSurvival()) {
-                if (!this.isSleeping()) {
-                    if (diff > 0.0625) {
-                        PlayerInvalidMoveEvent ev;
-                        this.getServer().getPluginManager().callEvent(ev = new PlayerInvalidMoveEvent(this, true));
-                        if (!ev.isCancelled()) {
-                            revert = ev.isRevert();
-
-                            if (revert) {
-                                this.server.getLogger().warning(this.getServer().getLanguage().translateString("nukkit.player.invalidMove", this.getName()));
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (diff > 0) {
-                this.x = newPos.x;
-                this.y = newPos.y;
-                this.z = newPos.z;
-                double radius = this.getWidth() / 2;
-                this.boundingBox.setBounds(this.x - radius, this.y, this.z - radius, this.x + radius, this.y + this.getHeight(), this.z + radius);
-            }
-        }
-
-        Location from = new Location(
-                this.lastX,
-                this.lastY,
-                this.lastZ,
-                this.lastYaw,
-                this.lastPitch,
-                this.level);
-        Location to = this.getLocation();
-
-        double delta = Math.pow(this.lastX - to.x, 2) + Math.pow(this.lastY - to.y, 2) + Math.pow(this.lastZ - to.z, 2);
-        double deltaAngle = Math.abs(this.lastYaw - to.yaw) + Math.abs(this.lastPitch - to.pitch);
-
-        if (!revert && (delta > (1 / 16) || deltaAngle > 10)) {
-
-            boolean isFirst = this.firstMove;
-
-            this.firstMove = false;
-            this.lastX = to.x;
-            this.lastY = to.y;
-            this.lastZ = to.z;
-
-            this.lastYaw = to.yaw;
-            this.lastPitch = to.pitch;
-
-            if (!isFirst) {
-                PlayerMoveEvent ev = new PlayerMoveEvent(this, from, to);
-
-                this.server.getPluginManager().callEvent(ev);
-
-                if (!(revert = ev.isCancelled())) { //Yes, this is intended
-                    if (to.distanceSquared(ev.getTo()) > 0.01) { //If plugins modify the destination
-                        this.teleport(ev.getTo(), null);
-                    } else {
-                        this.addMovement(this.x, this.y + this.getEyeHeight(), this.z, this.yaw, this.pitch, this.yaw);
-                    }
-                }
-            }
-
-            if (!this.isSpectator()) {
-                this.checkNearEntities();
-            }
-
-            this.speed = from.subtract(to);
-        } else if (distanceSquared == 0) {
-            this.speed = new Vector3(0, 0, 0);
-        }
-
-        if (!revert && (this.isFoodEnabled() || this.getServer().getDifficulty() == 0)) {
-            if ((this.isSurvival() || this.isAdventure())/* && !this.getRiddingOn() instanceof Entity*/) {
-
-                //UpdateFoodExpLevel
-                if (distance >= 0.05) {
-                    double jump = 0;
-                    double swimming = this.isInsideOfWater() ? 0.015 * distance : 0;
-                    if (swimming != 0) distance = 0;
-                    if (this.isSprinting()) {  //Running
-                        if (this.inAirTicks == 3 && swimming == 0) {
-                            jump = 0.7;
-                        }
-                        this.getFoodData().updateFoodExpLevel(0.1 * distance + jump + swimming);
-                    } else {
-                        if (this.inAirTicks == 3 && swimming == 0) {
-                            jump = 0.2;
-                        }
-                        this.getFoodData().updateFoodExpLevel(0.01 * distance + jump + swimming);
-                    }
-                }
-            }
-        }
-
-        if (revert) {
-
-            this.lastX = from.x;
-            this.lastY = from.y;
-            this.lastZ = from.z;
-
-            this.lastYaw = from.yaw;
-            this.lastPitch = from.pitch;
-
-            this.sendPosition(from, from.yaw, from.pitch, MovePlayerPacket.MODE_RESET);
-            //this.sendSettings();
-            this.forceMovement = new Vector3(from.x, from.y, from.z);
-        } else {
-            this.forceMovement = null;
-            if (distanceSquared != 0 && this.nextChunkOrderRun > 20) {
-                this.nextChunkOrderRun = 20;
-            }
-        }
-
-        this.newPosition = null;
-    }
+//    protected void processMovement(int tickDiff) {
+//        if (!this.isAlive() || !this.spawned || this.newPosition == null || this.teleportPosition != null) {
+//            return;
+//        }
+//
+//        Vector3 newPos = this.newPosition;
+//        double distanceSquared = newPos.distanceSquared(this);
+//
+//        boolean revert = false;
+//
+////        if ((distanceSquared / ((double) (tickDiff * tickDiff))) > 100 && (newPos.y - this.y) > -5) {
+////            revert = true;
+////        } else {
+//            if (this.chunk == null || !this.chunk.isGenerated()) {
+//                BaseFullChunk chunk = this.level.getChunk((int) newPos.x >> 4, (int) newPos.z >> 4, false);
+//                if (chunk == null || !chunk.isGenerated()) {
+//                    revert = true;
+//                    this.nextChunkOrderRun = 0;
+//                } else {
+//                    if (this.chunk != null) {
+//                        this.chunk.removeEntity(this);
+//                    }
+//                    this.chunk = chunk;
+//                }
+//            }
+////        }
+//
+//        Vector2 newPosV2 = new Vector2(newPos.x, newPos.z);
+//        double distance = newPosV2.distance(this.x, this.z);
+//
+////        if (!revert && distanceSquared != 0) {
+////            double dx = newPos.x - this.x;
+////            double dy = newPos.y - this.y;
+////            double dz = newPos.z - this.z;
+////
+////            this.move(dx, dy, dz);
+////
+////            double diffX = this.x - newPos.x;
+////            double diffY = this.y - newPos.y;
+////            double diffZ = this.z - newPos.z;
+////
+////            double yS = 0.5 + this.ySize;
+////            if (diffY >= -yS || diffY <= yS) {
+////                diffY = 0;
+////            }
+////
+////            double diff = (diffX * diffX + diffY * diffY + diffZ * diffZ) / ((double) (tickDiff * tickDiff));
+////
+////            if (this.isSurvival()) {
+////                if (!this.isSleeping()) {
+////                    if (diff > 0.0625) {
+////                        PlayerInvalidMoveEvent ev;
+////                        this.getServer().getPluginManager().callEvent(ev = new PlayerInvalidMoveEvent(this, true));
+////                        if (!ev.isCancelled()) {
+////                            revert = ev.isRevert();
+////
+////                            if (revert) {
+////                                this.server.getLogger().warning(this.getServer().getLanguage().translateString("nukkit.player.invalidMove", this.getName()));
+////                            }
+////                        }
+////                    }
+////                }
+////            }
+////
+////            if (diff > 0) {
+////                this.x = newPos.x;
+////                this.y = newPos.y;
+////                this.z = newPos.z;
+////                double radius = this.getWidth() / 2;
+////                this.boundingBox.setBounds(this.x - radius, this.y, this.z - radius, this.x + radius, this.y + this.getHeight(), this.z + radius);
+////            }
+////        }
+//
+//        Location from = new Location(
+//                this.lastX,
+//                this.lastY,
+//                this.lastZ,
+//                this.lastYaw,
+//                this.lastPitch,
+//                this.level);
+//        Location to = this.getLocation();
+//
+//        double delta = Math.pow(this.lastX - to.x, 2) + Math.pow(this.lastY - to.y, 2) + Math.pow(this.lastZ - to.z, 2);
+//        double deltaAngle = Math.abs(this.lastYaw - to.yaw) + Math.abs(this.lastPitch - to.pitch);
+//
+//        if (!revert && (delta > (1 / 16) || deltaAngle > 10)) {
+//
+//            boolean isFirst = this.firstMove;
+//
+//            this.firstMove = false;
+//            this.lastX = to.x;
+//            this.lastY = to.y;
+//            this.lastZ = to.z;
+//
+//            this.lastYaw = to.yaw;
+//            this.lastPitch = to.pitch;
+//
+//            if (!isFirst) {
+////                PlayerMoveEvent ev = new PlayerMoveEvent(this, from, to);
+////
+////                this.server.getPluginManager().callEvent(ev);
+////
+////                if (!(revert = ev.isCancelled())) { //Yes, this is intended
+////                    if (to.distanceSquared(ev.getTo()) > 0.01) { //If plugins modify the destination
+////                        this.teleport(ev.getTo(), null);
+////                    } else {
+//                        this.addMovement(this.x, this.y + this.getEyeHeight(), this.z, this.yaw, this.pitch, this.yaw);
+////                    }
+////                }
+//            }
+//
+//            if (!this.isSpectator()) {
+//                this.checkNearEntities();
+//            }
+//
+//            this.speed = from.subtract(to);
+//        } else if (distanceSquared == 0) {
+//            this.speed = new Vector3(0, 0, 0);
+//        }
+//
+//        if(!revert && this.isFoodEnabled()) {
+//            this.getFoodData().movementUpdate(distance);
+//        }
+//
+//        if (revert) {
+//            this.lastX = from.x;
+//            this.lastY = from.y;
+//            this.lastZ = from.z;
+//
+//            this.lastYaw = from.yaw;
+//            this.lastPitch = from.pitch;
+//
+//            this.sendPosition(from, from.yaw, from.pitch, MovePlayerPacket.MODE_RESET);
+//            //this.sendSettings();
+//            this.forceMovement = new Vector3(from.x, from.y, from.z);
+//        } else {
+//            this.forceMovement = null;
+//            if (distanceSquared != 0 && this.nextChunkOrderRun > 20) {
+//                this.nextChunkOrderRun = 20;
+//            }
+//        }
+//
+//        this.newPosition = null;
+//    }
 
     @Override
     public boolean setMotion(Vector3 motion) {
@@ -1462,7 +1439,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         if (this.spawned) {
-            this.processMovement(tickDiff);
+//            this.processMovement(tickDiff);
 
             this.entityBaseTick(tickDiff);
 
@@ -1477,34 +1454,34 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             if (!this.isSpectator() && this.speed != null) {
-                if (this.onGround) {
-                    if (this.inAirTicks != 0) {
-                        this.startAirTicks = 5;
-                    }
-                    this.inAirTicks = 0;
-                    this.highestPosition = this.y;
-                } else {
-                    if (!this.allowFlight && this.inAirTicks > 10 && !this.isSleeping() && !this.getDataPropertyBoolean(DATA_NO_AI)) {
-                        double expectedVelocity = (-this.getGravity()) / ((double) this.getDrag()) - ((-this.getGravity()) / ((double) this.getDrag())) * Math.exp(-((double) this.getDrag()) * ((double) (this.inAirTicks - this.startAirTicks)));
-                        double diff = (this.speed.y - expectedVelocity) * (this.speed.y - expectedVelocity);
-
-                        if (!this.hasEffect(Effect.JUMP) && diff > 0.6 && expectedVelocity < this.speed.y && !this.server.getAllowFlight()) {
-                            if (this.inAirTicks < 100) {
-                                //this.sendSettings();
-                                this.setMotion(new Vector3(0, expectedVelocity, 0));
-                            } else if (this.kick("Flying is not enabled on this server")) {
-                                return false;
-                            }
-                        }
-                    }
-
-                    if (this.y > highestPosition) {
-                        this.highestPosition = this.y;
-                    }
-
-                    ++this.inAirTicks;
-
-                }
+//                if (this.onGround) {
+//                    if (this.inAirTicks != 0) {
+//                        this.startAirTicks = 5;
+//                    }
+//                    this.inAirTicks = 0;
+//                    this.highestPosition = this.y;
+//                } else {
+//                    if (!this.allowFlight && this.inAirTicks > 10 && !this.isSleeping() && !this.getDataPropertyBoolean(DATA_NO_AI)) {
+//                        double expectedVelocity = (-this.getGravity()) / ((double) this.getDrag()) - ((-this.getGravity()) / ((double) this.getDrag())) * Math.exp(-((double) this.getDrag()) * ((double) (this.inAirTicks - this.startAirTicks)));
+//                        double diff = (this.speed.y - expectedVelocity) * (this.speed.y - expectedVelocity);
+//
+//                        if (!this.hasEffect(Effect.JUMP) && diff > 0.6 && expectedVelocity < this.speed.y && !this.server.getAllowFlight()) {
+//                            if (this.inAirTicks < 100) {
+//                                //this.sendSettings();
+//                                this.setMotion(new Vector3(0, expectedVelocity, 0));
+//                            } else if (this.kick("Flying is not enabled on this server")) {
+//                                return false;
+//                            }
+//                        }
+//                    }
+//
+//                    if (this.y > highestPosition) {
+//                        this.highestPosition = this.y;
+//                    }
+//
+//                    ++this.inAirTicks;
+//
+//                }
 
                 if (this.isSurvival() || this.isAdventure()) {
                     if (this.getFoodData() != null) this.getFoodData().update(tickDiff);
@@ -1769,6 +1746,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.server.onPlayerLogin(this);
     }
 
+    protected boolean processPlayerMove(Position newPosition, boolean onGround) {
+        return false;
+    }
+
     public void handleDataPacket(DataPacket packet) {
         if (!connected) {
             return;
@@ -1789,6 +1770,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             switch (packet.pid()) {
+                //region LoginPacket
                 case ProtocolInfo.LOGIN_PACKET:
                     if (this.loggedIn) {
                         break;
@@ -1872,14 +1854,87 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     this.onPlayerPreLogin();
 
                     break;
+                //endregion
+                //region MovePlayerPacket
                 case ProtocolInfo.MOVE_PLAYER_PACKET:
-
-
                     MovePlayerPacket movePlayerPacket = (MovePlayerPacket) packet;
-                    Vector3 newPos = new Vector3(movePlayerPacket.x, movePlayerPacket.y - this.getEyeHeight(), movePlayerPacket.z);
-
+                    Location newPos = new Location(movePlayerPacket.x, movePlayerPacket.y - this.getEyeHeight(), movePlayerPacket.z, movePlayerPacket.headYaw, movePlayerPacket.pitch);
                     boolean revert = false;
+
                     if (!this.isAlive() || !this.spawned) {
+                        return;
+                    }
+
+                    double distanceSquared = newPos.distanceSquared(this);
+
+                    if (this.chunk == null || !this.chunk.isGenerated()) {
+                        BaseFullChunk chunk = this.level.getChunk((int) newPos.x >> 4, (int) newPos.z >> 4, false);
+                        if (chunk == null || !chunk.isGenerated()) {
+                            revert = true;
+                            this.nextChunkOrderRun = 0;
+                        } else {
+                            if (this.chunk != null) {
+                                this.chunk.removeEntity(this);
+                            }
+                            this.chunk = chunk;
+                        }
+                    }
+
+                    Vector2 newPosV2 = new Vector2(newPos.x, newPos.z);
+                    double distance = newPosV2.distance(this.x, this.z);
+
+                    Location from = new Location(
+                            this.lastX,
+                            this.lastY,
+                            this.lastZ,
+                            this.lastYaw,
+                            this.lastPitch,
+                            this.level);
+                    Location to = this.getLocation();
+
+//                    double delta = Math.pow(this.lastX - to.x, 2) + Math.pow(this.lastY - to.y, 2) + Math.pow(this.lastZ - to.z, 2);
+//                    double deltaAngle = Math.abs(this.lastYaw - to.yaw) + Math.abs(this.lastPitch - to.pitch);
+
+                    if (!revert) {// && (delta > (1 / 16) || deltaAngle > 10)) {
+
+                        boolean isFirst = this.firstMove;
+
+                        this.firstMove = false;
+                        this.lastX = to.x;
+                        this.lastY = to.y;
+                        this.lastZ = to.z;
+
+                        this.lastYaw = to.yaw;
+                        this.lastPitch = to.pitch;
+
+                        if (!isFirst) {
+                            this.addMovement(this.x, this.y + this.getEyeHeight(), this.z, this.yaw, this.pitch, this.yaw);
+                        }
+
+                        if (!this.isSpectator()) {
+                            this.checkNearEntities();
+                        }
+
+                        this.speed = from.subtract(to);
+                    } else if (distanceSquared == 0) {
+                        this.speed = new Vector3(0, 0, 0);
+                    }
+
+                    if(!revert && this.isFoodEnabled()) {
+                        this.getFoodData().movementUpdate(distance);
+                    }
+
+                    if (revert) {
+                        this.sendPosition(from, from.yaw, from.pitch, MovePlayerPacket.MODE_RESET);
+                        this.forceMovement = new Vector3(from.x, from.y, from.z);
+                    } else {
+                        this.forceMovement = null;
+                        if (distanceSquared != 0 && this.nextChunkOrderRun > 20) {
+                            this.nextChunkOrderRun = 20;
+                        }
+                    }
+
+                    if (!this.isAlive() || !this.spawned || processPlayerMove(newPos, movePlayerPacket.onGround)) {
                         revert = true;
                         this.forceMovement = new Vector3(this.x, this.y, this.z);
                     }
@@ -1887,7 +1942,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     if (this.teleportPosition != null || this.forceMovement != null && (newPos.distanceSquared(this.forceMovement) > 0.1 || revert)) {
                         this.sendPosition(this.teleportPosition == null ? this.forceMovement : this.teleportPosition, movePlayerPacket.yaw, movePlayerPacket.pitch);
                     } else {
-
                         movePlayerPacket.yaw %= 360;
                         movePlayerPacket.pitch %= 360;
 
@@ -1895,8 +1949,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             movePlayerPacket.yaw += 360;
                         }
 
-                        this.setRotation(movePlayerPacket.yaw, movePlayerPacket.pitch);
-                        this.newPosition = newPos;
+//                        this.setRotation(movePlayerPacket.yaw, movePlayerPacket.pitch);
+                        this.setPositionAndRotation(newPos, movePlayerPacket.yaw, movePlayerPacket.pitch);
+//                        this.newPosition = newPos;
                         this.forceMovement = null;
                     }
 
@@ -1907,6 +1962,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     break;
+                //endregion
+                //region MobEquipmentPacket
                 case ProtocolInfo.MOB_EQUIPMENT_PACKET:
                     if (!this.spawned || !this.isAlive()) {
                         break;
@@ -1975,6 +2032,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     this.setDataFlag(Player.DATA_FLAGS, Player.DATA_FLAG_ACTION, false);
                     break;
+                //endregion
+                //region UseItemPacket
                 case ProtocolInfo.USE_ITEM_PACKET:
                     if (!this.spawned || !this.isAlive() || this.blocked) {
                         break;
@@ -2204,6 +2263,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.startAction = this.server.getTick();
                     }
                     break;
+                //endregion
+                //region PlayerActionPacket
                 case ProtocolInfo.PLAYER_ACTION_PACKET:
                     if (!this.spawned || this.blocked || (!this.isAlive() && ((PlayerActionPacket) packet).action != PlayerActionPacket.ACTION_RESPAWN && ((PlayerActionPacket) packet).action != PlayerActionPacket.ACTION_DIMENSION_CHANGE)) {
                         break;
@@ -2393,7 +2454,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     this.startAction = -1;
                     this.setDataFlag(Player.DATA_FLAGS, Player.DATA_FLAG_ACTION, false);
                     break;
-
+                //endregion
+                //region RemoveBlockPacket
                 case ProtocolInfo.REMOVE_BLOCK_PACKET:
                     if (!this.spawned || this.blocked || !this.isAlive()) {
                         break;
@@ -2433,10 +2495,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         ((BlockEntitySpawnable) blockEntity).spawnTo(this);
                     }
                     break;
-
+                //endregion
+                //region MobArmorEquipmentPacket
                 case ProtocolInfo.MOB_ARMOR_EQUIPMENT_PACKET:
                     break;
-
+                //endregion
+                //region InteractPacket
                 case ProtocolInfo.INTERACT_PACKET:
                     if (!this.spawned || !this.isAlive() || this.blocked) {
                         break;
@@ -2598,6 +2662,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     break;
+                //endregion
+                //region AnimatePacket
                 case ProtocolInfo.ANIMATE_PACKET:
                     if (!this.spawned || !this.isAlive()) {
                         break;
@@ -2614,10 +2680,13 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     animatePacket.action = animationEvent.getAnimationType();
                     Server.broadcastPacket(this.getViewers().values(), animatePacket);
                     break;
+                //endregion
+                //region SetHealthPacket
                 case ProtocolInfo.SET_HEALTH_PACKET:
                     //use UpdateAttributePacket instead
                     break;
-
+                //endregion
+                //region EntityEventPacket
                 case ProtocolInfo.ENTITY_EVENT_PACKET:
                     if (!this.spawned || this.blocked || !this.isAlive()) {
                         break;
@@ -2674,6 +2743,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             break;
                     }
                     break;
+                //endregion
+                //region DropItemPacket
                 case ProtocolInfo.DROP_ITEM_PACKET:
                     if (!this.spawned || this.blocked || !this.isAlive()) {
                         break;
@@ -2699,7 +2770,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     this.setDataFlag(DATA_FLAGS, DATA_FLAG_ACTION, false);
                     break;
-
+                //endregion
+                //region TextPacket
                 case ProtocolInfo.TEXT_PACKET:
                     if (!this.spawned || !this.isAlive()) {
                         break;
@@ -2735,6 +2807,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         }
                     }
                     break;
+                //endregion
+                //region ContainerClosePacket
                 case ProtocolInfo.CONTAINER_CLOSE_PACKET:
                     ContainerClosePacket containerClosePacket = (ContainerClosePacket) packet;
                     if (!this.spawned || containerClosePacket.windowid == 0) {
@@ -2749,7 +2823,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.windowIndex.remove(containerClosePacket.windowid);
                     }
                     break;
-
+                //endregion
+                //region CraftingEventPacket
                 case ProtocolInfo.CRAFTING_EVENT_PACKET:
                     CraftingEventPacket craftingEventPacket = (CraftingEventPacket) packet;
                     if (!this.spawned || !this.isAlive()) {
@@ -2982,6 +3057,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     //todo: achievement
 
                     break;
+                //endregion
+                //region ContainerSetSlotPacket
                 case ProtocolInfo.CONTAINER_SET_SLOT_PACKET:
                     if (!this.spawned || this.blocked || !this.isAlive()) {
                         break;
@@ -3052,6 +3129,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     break;
+                //endregion
+                //region BlockEntityDataPacket
                 case ProtocolInfo.BLOCK_ENTITY_DATA_PACKET:
                     if (!this.spawned || this.blocked || !this.isAlive()) {
                         break;
@@ -3104,6 +3183,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         }
                     }
                     break;
+                //endregion
+                //region RequestChunkRadiusPacket
                 case ProtocolInfo.REQUEST_CHUNK_RADIUS_PACKET:
                     RequestChunkRadiusPacket requestChunkRadiusPacket = (RequestChunkRadiusPacket) packet;
                     ChunkRadiusUpdatedPacket chunkRadiusUpdatePacket = new ChunkRadiusUpdatedPacket();
@@ -3111,6 +3192,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     chunkRadiusUpdatePacket.radius = this.chunkRadius;
                     this.dataPacket(chunkRadiusUpdatePacket);
                     break;
+                //endregion
+                //region ItemFrameDropItemPacket
                 case ProtocolInfo.ITEM_FRAME_DROP_ITEM_PACKET:
                     ItemFrameDropItemPacket itemFrameDropItemPacket = (ItemFrameDropItemPacket) packet;
                     Vector3 vector3 = this.temporalVector.setComponents(itemFrameDropItemPacket.x, itemFrameDropItemPacket.y, itemFrameDropItemPacket.z);
@@ -3134,6 +3217,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         }
                     }
                     break;
+                //endregion
                 default:
                     break;
             }
@@ -3291,7 +3375,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 this.removeWindow(window);
             }
 
-            for (String index : new ArrayList<>(this.usedChunks.keySet())) {
+            for (ChunkPosition index : new ArrayList<>(this.usedChunks.keySet())) {
                 Chunk.Entry entry = Level.getChunkXZ(index);
                 this.level.unregisterChunkLoader(this, entry.chunkX, entry.chunkZ);
                 this.usedChunks.remove(index);
@@ -3786,7 +3870,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             for (int X = -1; X <= 1; ++X) {
                 for (int Z = -1; Z <= 1; ++Z) {
-                    String index = Level.chunkHash(chunkX + X, chunkZ + Z);
+                    ChunkPosition index = new ChunkPosition(chunkX + X, chunkZ + Z);
                     if (!this.usedChunks.containsKey(index) || !this.usedChunks.get(index)) {
                         return false;
                     }
@@ -3945,7 +4029,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     @Override
     public void onChunkChanged(FullChunk chunk) {
-        this.loadQueue.put(Level.chunkHash(chunk.getX(), chunk.getZ()), Math.abs(((int) this.x >> 4) - chunk.getX()) + Math.abs(((int) this.z >> 4) - chunk.getZ()));
+        this.loadQueue.put(new ChunkPosition(chunk.getX(), chunk.getZ()), Math.abs(((int) this.x >> 4) - chunk.getX()) + Math.abs(((int) this.z >> 4) - chunk.getZ()));
     }
 
     @Override
