@@ -35,7 +35,7 @@ public class ItemBoat extends Item {
     public boolean onActivate(Level level, Player player, Block block, Block target, int face, double fx, double fy, double fz) {
         if (face != 1) return false;
         EntityBoat boat = new EntityBoat(
-                level.getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4), new CompoundTag("")
+                level.getChunk(block.x >> 4, block.z >> 4), new CompoundTag("")
                 .putList(new ListTag<DoubleTag>("Pos")
                         .add(new DoubleTag("", block.getX() + 0.5))
                         .add(new DoubleTag("", block.getY() - 0.0625))

@@ -2,8 +2,10 @@ package cn.nukkit.blockentity;
 
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.timings.Timing;
 import cn.nukkit.timings.Timings;
@@ -16,7 +18,7 @@ import java.util.Map;
 /**
  * @author MagicDroidX
  */
-public abstract class BlockEntity extends Position {
+public abstract class BlockEntity extends BlockVector3 {
     //WARNING: DO NOT CHANGE ANY NAME HERE, OR THE CLIENT WILL CRASH
     public static final String CHEST = "Chest";
     public static final String FURNACE = "Furnace";
@@ -37,6 +39,7 @@ public abstract class BlockEntity extends Position {
     private static final Map<String, Class<? extends BlockEntity>> knownBlockEntities = new HashMap<>();
     private static final Map<String, String> shortNames = new HashMap<>();
 
+    public Level level;
     public FullChunk chunk;
     public String name;
     public long id;
@@ -136,7 +139,7 @@ public abstract class BlockEntity extends Position {
     }
 
     public Block getBlock() {
-        return this.level.getBlock(this);
+        return this.level.getBlock(new BlockVector3(x, y, z));
     }
 
     public abstract boolean isBlockEntityValid();
@@ -165,6 +168,14 @@ public abstract class BlockEntity extends Position {
 
     public String getName() {
         return name;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public Level getLevel() {
+        return this.level;
     }
 
 }

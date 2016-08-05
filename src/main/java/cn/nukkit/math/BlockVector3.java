@@ -205,6 +205,13 @@ public class BlockVector3 implements Cloneable {
 		return this;
 	}
 
+	public BlockVector3 setComponents(double x, double y, double z) {
+		this.x = (int) x;
+		this.y = (int) y;
+		this.z = (int) z;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "BlockVector3(x=" + this.x + ",y=" + this.y + ",z=" + this.z + ")";

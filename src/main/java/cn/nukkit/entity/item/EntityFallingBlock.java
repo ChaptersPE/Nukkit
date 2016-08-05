@@ -10,6 +10,7 @@ import cn.nukkit.event.entity.EntityBlockChangeEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
@@ -115,7 +116,7 @@ public class EntityFallingBlock extends Entity {
         boolean hasUpdate = entityBaseTick(tickDiff);
 
         if (isAlive()) {
-            Vector3 pos = new Vector3(x - 0.5, y, z - 0.5).round();
+            BlockVector3 pos = new BlockVector3(x - 0.5, y, z - 0.5);
 
             if (ticksLived == 1) {
                 Block block = level.getBlock(pos);
@@ -136,7 +137,7 @@ public class EntityFallingBlock extends Entity {
             motionY *= 1 - getDrag();
             motionZ *= friction;
 
-            pos = (new Vector3(x - 0.5, y, z - 0.5)).round();
+            pos.setComponents(x - 0.5, y, z - 0.5);
 
             if (onGround) {
                 kill();

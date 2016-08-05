@@ -38,7 +38,7 @@ public class ItemMinecart extends Item {
         // TODO: 2016/1/30 check if blockId of secret is a rail
 
         EntityMinecartEmpty minecart = new EntityMinecartEmpty(
-                level.getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4), new CompoundTag("")
+                level.getChunk(block.x >> 4, block.z >> 4), new CompoundTag("")
                 .putList(new ListTag<DoubleTag>("Pos")
                         .add(new DoubleTag("", block.getX() + 0.5))
                         .add(new DoubleTag("", block.getY()))
