@@ -26,6 +26,9 @@ public abstract class BlockLiquid extends BlockTransparent {
 
     protected BlockLiquid(int meta) {
         super(meta);
+
+        this.temporalVector = new Vector3();
+        this.blockTemporalVector = new BlockVector3();
     }
 
     @Override
@@ -94,13 +97,6 @@ public abstract class BlockLiquid extends BlockTransparent {
 
     public Vector3 getFlowVector() {
         Vector3 vector = new Vector3(0, 0, 0);
-
-        if (this.temporalVector == null) {
-            this.temporalVector = new Vector3(0, 0, 0);
-        }
-        if (this.blockTemporalVector == null) {
-            this.blockTemporalVector = new BlockVector3();
-        }
 
         int decay = this.getEffectiveFlowDecay(this);
 
