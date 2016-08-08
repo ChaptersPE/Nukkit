@@ -93,4 +93,6 @@ public interface LevelProvider {
     void close();
 
     void saveLevelData();
+
+    void updateLevelName(String name);
 }
