@@ -110,8 +110,8 @@ public class Chunk extends BaseChunk {
             }
         }
 
-        this.x = this.nbt.getInt("xPos");
-        this.z = this.nbt.getInt("zPos");
+        this.vector2.x = this.nbt.getInt("xPos");
+        this.vector2.z = this.nbt.getInt("zPos");
         for (int Y = 0; Y < sections.length; ++Y) {
             cn.nukkit.level.format.ChunkSection section = sections[Y];
             if (section != null) {
@@ -234,8 +234,8 @@ public class Chunk extends BaseChunk {
     @Override
     public byte[] toFastBinary() {
         CompoundTag nbt = this.getNBT().copy();
-        nbt.putInt("xPos", this.x);
-        nbt.putInt("zPos", this.z);
+        nbt.putInt("xPos", this.vector2.x);
+        nbt.putInt("zPos", this.vector2.z);
 
         nbt.putIntArray("BiomeColors", this.getBiomeColorArray());
         nbt.putIntArray("HeightMap", this.getHeightMapArray());
@@ -298,8 +298,8 @@ public class Chunk extends BaseChunk {
     public byte[] toBinary() {
         CompoundTag nbt = this.getNBT().copy();
 
-        nbt.putInt("xPos", this.x);
-        nbt.putInt("zPos", this.z);
+        nbt.putInt("xPos", this.vector2.x);
+        nbt.putInt("zPos", this.vector2.z);
 
         ListTag<CompoundTag> sectionList = new ListTag<>("Sections");
         for (cn.nukkit.level.format.ChunkSection section : this.getSections()) {
@@ -372,8 +372,8 @@ public class Chunk extends BaseChunk {
                 chunk = new Chunk(Anvil.class, null);
             }
 
-            chunk.x = chunkX;
-            chunk.z = chunkZ;
+            chunk.vector2.x = chunkX;
+            chunk.vector2.z = chunkZ;
 
             chunk.sections = new cn.nukkit.level.format.ChunkSection[8];
             for (int y = 0; y < 8; ++y) {

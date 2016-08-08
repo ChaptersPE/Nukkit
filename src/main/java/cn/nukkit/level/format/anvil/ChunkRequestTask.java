@@ -4,6 +4,7 @@ import cn.nukkit.Server;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.level.Level;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.Binary;
@@ -20,16 +21,14 @@ public class ChunkRequestTask extends AsyncTask {
     protected final int levelId;
 
     protected final byte[] chunk;
-    protected final int chunkX;
-    protected final int chunkZ;
+    protected IntVector2 chunkPos;
 
     protected byte[] blockEntities;
 
     public ChunkRequestTask(Level level, Chunk chunk) {
         this.levelId = level.getId();
         this.chunk = chunk.toFastBinary();
-        this.chunkX = chunk.getX();
-        this.chunkZ = chunk.getZ();
+        this.chunkPos = chunk.getVector2();
 
         byte[] buffer = new byte[0];
 
@@ -127,7 +126,7 @@ public class ChunkRequestTask extends AsyncTask {
     public void onCompletion(Server server) {
         Level level = server.getLevel(this.levelId);
         if (level != null && this.hasResult()) {
-            level.chunkRequestCallback(this.chunkX, this.chunkZ, (byte[]) this.getResult());
+            level.chunkRequestCallback(this.chunkPos, (byte[]) this.getResult());
         }
     }
 }

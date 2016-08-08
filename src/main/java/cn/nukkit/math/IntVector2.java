@@ -1,6 +1,6 @@
 package cn.nukkit.math;
 
-final public class IntVector2 {
+public class IntVector2 {
 	public int x;
 	public int z;
 
@@ -23,6 +23,12 @@ final public class IntVector2 {
 
 	public int getZ() {
 		return this.z;
+	}
+
+	public IntVector2 setComponents(int x, int z) {
+		this.x = x;
+		this.z = z;
+		return this;
 	}
 
 	@Override

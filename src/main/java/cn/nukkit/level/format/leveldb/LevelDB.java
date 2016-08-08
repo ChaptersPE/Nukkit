@@ -154,8 +154,8 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public AsyncTask requestChunkTask(int x, int z) {
-        FullChunk chunk = this.getChunk(x, z, false);
+    public AsyncTask requestChunkTask(IntVector2 pos) {
+        FullChunk chunk = this.getChunk(pos, false);
         if (chunk == null) {
             throw new ChunkException("Invalid Chunk sent");
         }
@@ -199,7 +199,7 @@ public class LevelDB implements LevelProvider {
         stream.put(extraData.getBuffer());
         stream.put(tiles);
 
-        this.getLevel().chunkRequestCallback(x, z, stream.getBuffer());
+        this.getLevel().chunkRequestCallback(pos, stream.getBuffer());
 
         return null;
     }
@@ -207,7 +207,7 @@ public class LevelDB implements LevelProvider {
     @Override
     public void unloadChunks() {
         for (Chunk chunk : new ArrayList<>(this.chunks.values())) {
-            this.unloadChunk(chunk.getX(), chunk.getZ(), false);
+            this.unloadChunk(chunk.getVector2(), false);
         }
         this.chunks = new HashMap<>();
     }
@@ -232,37 +232,36 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public boolean isChunkLoaded(int X, int Z) {
-        return this.chunks.containsKey(new IntVector2(X, Z));
+    public boolean isChunkLoaded(IntVector2 pos) {
+        return this.chunks.containsKey(pos);
     }
 
     @Override
     public void saveChunks() {
         for (Chunk chunk : this.chunks.values()) {
-            this.saveChunk(chunk.getX(), chunk.getZ());
+            this.saveChunk(chunk.getVector2());
         }
     }
 
     @Override
-    public boolean loadChunk(int chunkX, int chunkZ) {
-        return this.loadChunk(chunkX, chunkZ, false);
+    public boolean loadChunk(IntVector2 pos) {
+        return this.loadChunk(pos, false);
     }
 
     @Override
-    public boolean loadChunk(int chunkX, int chunkZ, boolean create) {
-        IntVector2 index = new IntVector2(chunkX, chunkZ);
-        if (this.chunks.containsKey(index)) {
+    public boolean loadChunk(IntVector2 pos, boolean create) {
+        if (this.chunks.containsKey(pos)) {
             return true;
         }
 
         this.level.timings.syncChunkLoadDataTimer.startTiming();
-        Chunk chunk = this.readChunk(chunkX, chunkZ);
+        Chunk chunk = this.readChunk(pos.x, pos.z);
         if (chunk == null && create) {
-            chunk = Chunk.getEmptyChunk(chunkX, chunkZ, this);
+            chunk = Chunk.getEmptyChunk(pos.x, pos.z, this);
         }
         this.level.timings.syncChunkLoadDataTimer.stopTiming();
         if (chunk != null) {
-            this.chunks.put(index, chunk);
+            this.chunks.put(pos, chunk);
             return true;
         }
 
@@ -297,16 +296,15 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public boolean unloadChunk(int X, int Z) {
-        return this.unloadChunk(X, Z, true);
+    public boolean unloadChunk(IntVector2 pos) {
+        return this.unloadChunk(pos, true);
     }
 
     @Override
-    public boolean unloadChunk(int X, int Z, boolean safe) {
-        IntVector2 index = new IntVector2(X, Z);
-        Chunk chunk = this.chunks.containsKey(index) ? this.chunks.get(index) : null;
+    public boolean unloadChunk(IntVector2 pos, boolean safe) {
+        Chunk chunk = this.chunks.containsKey(pos) ? this.chunks.get(pos) : null;
         if (chunk != null && chunk.unload(false, safe)) {
-            this.chunks.remove(index);
+            this.chunks.remove(pos);
             return true;
         }
 
@@ -314,25 +312,24 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public void saveChunk(int X, int Z) {
-        if (this.isChunkLoaded(X, Z)) {
-            this.writeChunk(this.getChunk(X, Z));
+    public void saveChunk(IntVector2 pos) {
+        if (this.isChunkLoaded(pos)) {
+            this.writeChunk(this.getChunk(pos));
         }
     }
 
     @Override
-    public Chunk getChunk(int chunkX, int chunkZ) {
-        return this.getChunk(chunkX, chunkZ, false);
+    public Chunk getChunk(IntVector2 pos) {
+        return this.getChunk(pos, false);
     }
 
     @Override
-    public Chunk getChunk(int chunkX, int chunkZ, boolean create) {
-        IntVector2 index = new IntVector2(chunkX, chunkZ);
-        if (this.chunks.containsKey(index)) {
-            return this.chunks.get(index);
+    public Chunk getChunk(IntVector2 pos, boolean create) {
+        if (this.chunks.containsKey(pos)) {
+            return this.chunks.get(pos);
         } else {
-            this.loadChunk(chunkX, chunkZ, create);
-            return this.chunks.containsKey(index) ? this.chunks.get(index) : null;
+            this.loadChunk(pos, create);
+            return this.chunks.containsKey(pos) ? this.chunks.get(pos) : null;
         }
     }
 
@@ -341,21 +338,20 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public void setChunk(int chunkX, int chunkZ, FullChunk chunk) {
+    public void setChunk(IntVector2 pos, FullChunk chunk) {
         if (!(chunk instanceof Chunk)) {
             throw new ChunkException("Invalid Chunk class");
         }
         chunk.setProvider(this);
 
-        chunk.setX(chunkX);
-        chunk.setZ(chunkZ);
-        IntVector2 index = new IntVector2(chunkX, chunkZ);
+        chunk.setX(pos.x);
+        chunk.setZ(pos.z);
 
-        if (this.chunks.containsKey(index) && !this.chunks.get(index).equals(chunk)) {
-            this.unloadChunk(chunkX, chunkZ, false);
+        if (this.chunks.containsKey(pos) && !this.chunks.get(pos).equals(chunk)) {
+            this.unloadChunk(pos, false);
         }
 
-        this.chunks.put(index, (Chunk) chunk);
+        this.chunks.put(pos, (Chunk) chunk);
     }
 
     public static ChunkSection createChunkSection(int Y) {
@@ -367,14 +363,13 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
-    public boolean isChunkGenerated(int chunkX, int chunkZ) {
-        return this.chunkExists(chunkX, chunkZ) && this.getChunk(chunkX, chunkZ, false) != null;
-
+    public boolean isChunkGenerated(IntVector2 pos) {
+        return this.chunkExists(pos.x, pos.z) && this.getChunk(pos, false) != null;
     }
 
     @Override
-    public boolean isChunkPopulated(int chunkX, int chunkZ) {
-        return this.getChunk(chunkX, chunkZ) != null;
+    public boolean isChunkPopulated(IntVector2 pos) {
+        return this.getChunk(pos) != null;
     }
 
     @Override

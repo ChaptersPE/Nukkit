@@ -8,6 +8,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
 import cn.nukkit.level.generator.biome.Biome;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.NumberTag;
@@ -50,8 +51,10 @@ public abstract class BaseFullChunk implements FullChunk {
     protected LevelProvider provider;
     protected Class<? extends LevelProvider> providerClass;
 
-    protected int x;
-    protected int z;
+//    protected int x;
+//    protected int z;
+
+    protected IntVector2 vector2 = new IntVector2();
 
     protected boolean hasChanged = false;
 
@@ -117,7 +120,7 @@ public abstract class BaseFullChunk implements FullChunk {
                         continue;
                     }
                     ListTag pos = nbt.getList("Pos");
-                    if ((((NumberTag) pos.get(0)).getData().intValue() >> 4) != this.x || ((((NumberTag) pos.get(2)).getData().intValue() >> 4) != this.z)) {
+                    if ((((NumberTag) pos.get(0)).getData().intValue() >> 4) != this.vector2.x || ((((NumberTag) pos.get(2)).getData().intValue() >> 4) != this.vector2.z)) {
                         changed = true;
                         continue;
                     }
@@ -138,7 +141,7 @@ public abstract class BaseFullChunk implements FullChunk {
                             changed = true;
                             continue;
                         }
-                        if ((nbt.getInt("x") >> 4) != this.x || ((nbt.getInt("z") >> 4) != this.z)) {
+                        if ((nbt.getInt("x") >> 4) != this.vector2.x || ((nbt.getInt("z") >> 4) != this.vector2.z)) {
                             changed = true;
                             continue;
                         }
@@ -164,20 +167,20 @@ public abstract class BaseFullChunk implements FullChunk {
 
     @Override
     public int getX() {
-        return x;
+        return this.vector2.x;
     }
 
     @Override
     public int getZ() {
-        return z;
+        return this.vector2.z;
     }
 
     public void setX(int x) {
-        this.x = x;
+        this.vector2.x = x;
     }
 
     public void setZ(int z) {
-        this.z = z;
+        this.vector2.z = z;
     }
 
     @Override
@@ -357,7 +360,7 @@ public abstract class BaseFullChunk implements FullChunk {
 
     @Override
     public boolean isLoaded() {
-        return this.getProvider() != null && this.getProvider().isChunkLoaded(this.getX(), this.getZ());
+        return this.getProvider() != null && this.getProvider().isChunkLoaded(this.vector2);
     }
 
     @Override
@@ -367,7 +370,7 @@ public abstract class BaseFullChunk implements FullChunk {
 
     @Override
     public boolean load(boolean generate) throws IOException {
-        return this.getProvider() != null && this.getProvider().getChunk(this.getX(), this.getZ(), true) != null;
+        return this.getProvider() != null && this.getProvider().getChunk(this.vector2, true) != null;
     }
 
     @Override
@@ -387,7 +390,7 @@ public abstract class BaseFullChunk implements FullChunk {
             return true;
         }
         if (save && this.hasChanged) {
-            level.saveChunk(this.getX(), this.getZ());
+            level.saveChunk(this.vector2);
         }
         if (safe) {
             for (Entity entity : this.getEntities().values()) {
@@ -485,4 +488,8 @@ public abstract class BaseFullChunk implements FullChunk {
 
     }
 
+    @Override
+    public IntVector2 getVector2() {
+        return this.vector2;
+    }
 }

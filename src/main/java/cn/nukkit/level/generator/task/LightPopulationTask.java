@@ -43,7 +43,7 @@ public class LightPopulationTask extends AsyncTask {
                 return;
             }
 
-            level.generateChunkCallback(chunk.getX(), chunk.getZ(), chunk);
+            level.generateChunkCallback(chunk.getVector2(), chunk);
         }
     }
 }

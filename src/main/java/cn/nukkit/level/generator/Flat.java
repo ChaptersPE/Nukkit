@@ -8,6 +8,7 @@ import cn.nukkit.level.generator.biome.Biome;
 import cn.nukkit.level.generator.object.ore.OreType;
 import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.level.generator.populator.PopulatorOre;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 
@@ -172,25 +173,25 @@ public class Flat extends Generator {
     }
 
     @Override
-    public void generateChunk(int chunkX, int chunkZ) {
+    public void generateChunk(IntVector2 pos) {
         if (this.chunk == null) {
             if (this.options.containsKey("preset") && !"".equals(this.options.get("preset"))) {
-                this.parsePreset((String) this.options.get("preset"), chunkX, chunkZ);
+                this.parsePreset((String) this.options.get("preset"), pos.x, pos.z);
             } else {
-                this.parsePreset(this.preset, chunkX, chunkZ);
+                this.parsePreset(this.preset, pos.z, pos.z);
             }
         }
         BaseFullChunk chunk = this.chunk.clone();
-        chunk.setX(chunkX);
-        chunk.setZ(chunkZ);
-        this.level.setChunk(chunkX, chunkZ, chunk);
+        chunk.setX(pos.x);
+        chunk.setZ(pos.z);
+        this.level.setChunk(pos, chunk);
     }
 
     @Override
-    public void populateChunk(int chunkX, int chunkZ) {
-        this.random.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
+    public void populateChunk(IntVector2 pos) {
+        this.random.setSeed(0xdeadbeef ^ (pos.x << 8) ^ pos.z ^ this.level.getSeed());
         for (Populator populator : this.populators) {
-            populator.populate(this.level, chunkX, chunkZ, this.random);
+            populator.populate(this.level, pos.x, pos.z, this.random);
         }
     }
 

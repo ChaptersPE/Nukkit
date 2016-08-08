@@ -98,8 +98,8 @@ public class Chunk extends BaseFullChunk {
             }
         }
 
-        this.x = this.nbt.getInt("xPos");
-        this.z = this.nbt.getInt("zPos");
+        this.vector2.x = this.nbt.getInt("xPos");
+        this.vector2.z = this.nbt.getInt("zPos");
         this.blocks = this.nbt.getByteArray("Blocks");
         this.data = this.nbt.getByteArray("Data");
         this.skyLight = this.nbt.getByteArray("SkyLight");
@@ -376,9 +376,9 @@ public class Chunk extends BaseFullChunk {
             int offset = 0;
             Chunk chunk = new Chunk(provider != null ? provider : McRegion.class.newInstance(), null);
             chunk.provider = provider;
-            chunk.x = Binary.readInt(Arrays.copyOfRange(data, offset, offset + 3));
+            chunk.vector2.x = Binary.readInt(Arrays.copyOfRange(data, offset, offset + 3));
             offset += 4;
-            chunk.z = Binary.readInt(Arrays.copyOfRange(data, offset, offset + 3));
+            chunk.vector2.z = Binary.readInt(Arrays.copyOfRange(data, offset, offset + 3));
             offset += 4;
             chunk.blocks = Arrays.copyOfRange(data, offset, offset + 32767);
             offset += 32768;
@@ -412,8 +412,8 @@ public class Chunk extends BaseFullChunk {
     @Override
     public byte[] toFastBinary() {
         BinaryStream stream = new BinaryStream(new byte[65536]);
-        stream.put(Binary.writeInt(this.x));
-        stream.put(Binary.writeInt(this.z));
+        stream.put(Binary.writeInt(this.vector2.x));
+        stream.put(Binary.writeInt(this.vector2.z));
         stream.put(this.getBlockIdArray());
         stream.put(this.getBlockDataArray());
         stream.put(this.getBlockSkyLightArray());
@@ -432,8 +432,8 @@ public class Chunk extends BaseFullChunk {
     public byte[] toBinary() {
         CompoundTag nbt = this.getNBT().copy();
 
-        nbt.putInt("xPos", this.x);
-        nbt.putInt("zPos", this.z);
+        nbt.putInt("xPos", this.vector2.x);
+        nbt.putInt("zPos", this.vector2.z);
 
         if (this.isGenerated()) {
             nbt.putByteArray("Blocks", this.getBlockIdArray());
@@ -502,8 +502,8 @@ public class Chunk extends BaseFullChunk {
                 chunk = new Chunk(McRegion.class, null);
             }
 
-            chunk.x = chunkX;
-            chunk.z = chunkZ;
+            chunk.vector2.x = chunkX;
+            chunk.vector2.z = chunkZ;
             chunk.data = new byte[16384];
             chunk.blocks = new byte[32768];
             byte[] skyLight = new byte[16384];

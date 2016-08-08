@@ -16,7 +16,7 @@ public interface LevelProvider {
     byte ORDER_YZX = 0;
     byte ORDER_ZXY = 1;
 
-    AsyncTask requestChunkTask(int x, int z);
+    AsyncTask requestChunkTask(IntVector2 pos);
 
     String getPath();
 
@@ -24,31 +24,31 @@ public interface LevelProvider {
 
     Map<String, Object> getGeneratorOptions();
 
-    BaseFullChunk getChunk(int X, int Z);
+    BaseFullChunk getChunk(IntVector2 pos);
 
-    BaseFullChunk getChunk(int X, int Z, boolean create);
+    BaseFullChunk getChunk(IntVector2 pos, boolean create);
 
     void saveChunks();
 
-    void saveChunk(int X, int Z);
+    void saveChunk(IntVector2 pos);
 
     void unloadChunks();
 
-    boolean loadChunk(int X, int Z);
+    boolean loadChunk(IntVector2 pos);
 
-    boolean loadChunk(int X, int Z, boolean create);
+    boolean loadChunk(IntVector2 pos, boolean create);
 
-    boolean unloadChunk(int X, int Z);
+    boolean unloadChunk(IntVector2 pos);
 
-    boolean unloadChunk(int X, int Z, boolean safe);
+    boolean unloadChunk(IntVector2 pos, boolean safe);
 
-    boolean isChunkGenerated(int X, int Z);
+    boolean isChunkGenerated(IntVector2 pos);
 
-    boolean isChunkPopulated(int X, int Z);
+    boolean isChunkPopulated(IntVector2 pos);
 
-    boolean isChunkLoaded(int X, int Z);
+    boolean isChunkLoaded(IntVector2 pos);
 
-    void setChunk(int chunkX, int chunkZ, FullChunk chunk);
+    void setChunk(IntVector2 pos, FullChunk chunk);
 
     String getName();
 

@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.generator.object.tree.ObjectTree;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.utils.BlockColor;
 
@@ -72,7 +73,7 @@ public class BlockSapling extends BlockFlowable {
 
             return true;
         }
-        this.level.loadChunk((int) this.x >> 4, (int) this.z >> 4);
+        this.level.loadChunk(new IntVector2(this.x >> 4, this.z >> 4));
         return false;
     }
 

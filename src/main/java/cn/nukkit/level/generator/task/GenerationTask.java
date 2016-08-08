@@ -45,15 +45,15 @@ public class GenerationTask extends AsyncTask {
                 return;
             }
 
-            manager.setChunk(chunk.getX(), chunk.getZ(), chunk);
+            manager.setChunk(chunk.getVector2(), chunk);
 
-            generator.generateChunk(chunk.getX(), chunk.getZ());
+            generator.generateChunk(chunk.getVector2());
 
             chunk = manager.getChunk(chunk.getX(), chunk.getZ());
             chunk.setGenerated();
             this.chunk = chunk.clone();
 
-            manager.setChunk(chunk.getX(), chunk.getZ(), null);
+            manager.setChunk(chunk.getVector2(), null);
         }
 
     }
@@ -73,7 +73,7 @@ public class GenerationTask extends AsyncTask {
                 return;
             }
 
-            level.generateChunkCallback(chunk.getX(), chunk.getZ(), chunk);
+            level.generateChunkCallback(chunk.getVector2(), chunk);
         }
     }
 }

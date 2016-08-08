@@ -79,25 +79,25 @@ public class PopulationTask extends AsyncTask {
                 }
             }
 
-            manager.setChunk(chunk.getX(), chunk.getZ(), chunk);
+            manager.setChunk(chunk.getVector2(), chunk);
             if (!chunk.isGenerated()) {
-                generator.generateChunk(chunk.getX(), chunk.getZ());
+                generator.generateChunk(chunk.getVector2());
                 chunk.setGenerated();
             }
 
             for (BaseFullChunk c : chunks) {
                 if (c != null) {
-                    manager.setChunk(c.getX(), c.getZ(), c);
+                    manager.setChunk(c.getVector2(), c);
                     if (!c.isGenerated()) {
-                        generator.generateChunk(c.getX(), c.getZ());
+                        generator.generateChunk(c.getVector2());
                         c = manager.getChunk(c.getX(), c.getZ());
                         c.setGenerated();
-                        manager.setChunk(c.getX(), c.getZ(), c);
+                        manager.setChunk(c.getVector2(), c);
                     }
                 }
             }
 
-            generator.populateChunk(chunk.getX(), chunk.getZ());
+            generator.populateChunk(chunk.getVector2());
 
             chunk = manager.getChunk(chunk.getX(), chunk.getZ());
             chunk.recalculateHeightMap();
@@ -106,7 +106,7 @@ public class PopulationTask extends AsyncTask {
             chunk.setPopulated();
             this.chunk = chunk.clone();
 
-            manager.setChunk(chunk.getX(), chunk.getZ(), null);
+            manager.setChunk(chunk.getVector2(), null);
 
             for (int i = 0; i < chunks.length; i++) {
                 if (i == 4) {
@@ -157,11 +157,11 @@ public class PopulationTask extends AsyncTask {
                 BaseFullChunk c = this.chunks[i];
                 if (c != null) {
                     c = c.clone();
-                    level.generateChunkCallback(c.getX(), c.getZ(), c);
+                    level.generateChunkCallback(c.getVector2(), c);
                 }
             }
 
-            level.generateChunkCallback(chunk.getX(), chunk.getZ(), chunk);
+            level.generateChunkCallback(chunk.getVector2(), chunk);
         }
     }
 }

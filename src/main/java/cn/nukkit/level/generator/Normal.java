@@ -11,6 +11,7 @@ import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.level.generator.populator.PopulatorCaves;
 import cn.nukkit.level.generator.populator.PopulatorGroundCover;
 import cn.nukkit.level.generator.populator.PopulatorOre;
+import cn.nukkit.math.IntVector2;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 
@@ -147,16 +148,16 @@ public class Normal extends Generator {
     }
 
     @Override
-    public void generateChunk(int chunkX, int chunkZ) {
-        this.random.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
+    public void generateChunk(IntVector2 pos) {
+        this.random.setSeed(0xdeadbeef ^ (pos.x << 8) ^ pos.z ^ this.level.getSeed());
 
-        double[][] seaFloorNoise = Generator.getFastNoise2D(this.noiseSeaFloor, 16, 16, 4, chunkX * 16, 0, chunkZ * 16);
-        double[][] landNoise = Generator.getFastNoise2D(this.noiseLand, 16, 16, 4, chunkX * 16, 0, chunkZ * 16);
-        double[][] mountainNoise = Generator.getFastNoise2D(this.noiseMountains, 16, 16, 4, chunkX * 16, 0, chunkZ * 16);
-        double[][] baseNoise = Generator.getFastNoise2D(this.noiseBaseGround, 16, 16, 4, chunkX * 16, 0, chunkZ * 16);
-        double[][] riverNoise = Generator.getFastNoise2D(this.noiseRiver, 16, 16, 4, chunkX * 16, 0, chunkZ * 16);
+        double[][] seaFloorNoise = Generator.getFastNoise2D(this.noiseSeaFloor, 16, 16, 4, pos.x * 16, 0, pos.z * 16);
+        double[][] landNoise = Generator.getFastNoise2D(this.noiseLand, 16, 16, 4, pos.x * 16, 0, pos.z * 16);
+        double[][] mountainNoise = Generator.getFastNoise2D(this.noiseMountains, 16, 16, 4, pos.x * 16, 0, pos.z * 16);
+        double[][] baseNoise = Generator.getFastNoise2D(this.noiseBaseGround, 16, 16, 4, pos.x * 16, 0, pos.z * 16);
+        double[][] riverNoise = Generator.getFastNoise2D(this.noiseRiver, 16, 16, 4, pos.x * 16, 0, pos.z * 16);
 
-        FullChunk chunk = this.level.getChunk(chunkX, chunkZ);
+        FullChunk chunk = this.level.getChunk(pos);
 
         for (int genx = 0; genx < 16; genx++) {
             for (int genz = 0; genz < 16; genz++) {
@@ -202,7 +203,7 @@ public class Normal extends Generator {
                 } else if (genyHeight <= beathStopHeight && genyHeight >= beathStartHeight) {
                     biome = Biome.getBiome(Biome.BEACH);
                 } else {
-                    biome = this.pickBiome(chunkX * 16 + genx, chunkZ * 16 + genz);
+                    biome = this.pickBiome(pos.x * 16 + genx, pos.z * 16 + genz);
                     if (canBaseGround) {
                         int baseGroundHeight = (int) (landHeightRange * landHeightNoise) - landHeightRange;
                         int baseGroundHeight2 = (int) (basegroundHeight * (baseNoise[genx][genz] + 1F));
@@ -264,21 +265,21 @@ public class Normal extends Generator {
 
         //populator chunk
         for (Populator populator : this.generationPopulators) {
-            populator.populate(this.level, chunkX, chunkZ, this.random);
+            populator.populate(this.level, pos.x, pos.z, this.random);
         }
 
     }
 
     @Override
-    public void populateChunk(int chunkX, int chunkZ) {
-        this.random.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
+    public void populateChunk(IntVector2 pos) {
+        this.random.setSeed(0xdeadbeef ^ (pos.x << 8) ^ pos.z ^ this.level.getSeed());
         for (Populator populator : this.populators) {
-            populator.populate(this.level, chunkX, chunkZ, this.random);
+            populator.populate(this.level, pos.x, pos.z, this.random);
         }
 
-        FullChunk chunk = this.level.getChunk(chunkX, chunkZ);
+        FullChunk chunk = this.level.getChunk(pos);
         Biome biome = Biome.getBiome(chunk.getBiomeId(7, 7));
-        biome.populateChunk(this.level, chunkX, chunkZ, this.random);
+        biome.populateChunk(this.level, pos.x, pos.z, this.random);
     }
 
     @Override

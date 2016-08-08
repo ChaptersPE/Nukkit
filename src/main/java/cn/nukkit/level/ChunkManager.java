@@ -1,6 +1,7 @@
 package cn.nukkit.level;
 
 import cn.nukkit.level.format.generic.BaseFullChunk;
+import cn.nukkit.math.IntVector2;
 
 /**
  * author: MagicDroidX
@@ -18,9 +19,13 @@ public interface ChunkManager {
 
     BaseFullChunk getChunk(int chunkX, int chunkZ);
 
-    void setChunk(int chunkX, int chunkZ);
+    BaseFullChunk getChunk(int chunkX, int chunkZ, boolean create);
 
-    void setChunk(int chunkX, int chunkZ, BaseFullChunk chunk);
+    BaseFullChunk getChunk(IntVector2 pos);
+
+    void setChunk(IntVector2 pos);
+
+    void setChunk(IntVector2 pos, BaseFullChunk chunk);
 
     long getSeed();
 }

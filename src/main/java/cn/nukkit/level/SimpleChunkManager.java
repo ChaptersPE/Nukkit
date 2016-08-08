@@ -57,22 +57,31 @@ public class SimpleChunkManager implements ChunkManager {
 
     @Override
     public BaseFullChunk getChunk(int chunkX, int chunkZ) {
-        IntVector2 index = new IntVector2(chunkX, chunkZ);
-        return this.chunks.containsKey(index) ? (BaseFullChunk) this.chunks.get(index) : null;
+        return this.getChunk(new IntVector2(chunkX, chunkZ));
     }
 
     @Override
-    public void setChunk(int chunkX, int chunkZ) {
-        this.setChunk(chunkX, chunkZ, null);
+    public BaseFullChunk getChunk(int chunkX, int chunkZ, boolean create) {
+        return this.getChunk(new IntVector2(chunkX, chunkZ));
     }
 
     @Override
-    public void setChunk(int chunkX, int chunkZ, BaseFullChunk chunk) {
+    public BaseFullChunk getChunk(IntVector2 pos) {
+        return this.chunks.containsKey(pos) ? (BaseFullChunk) this.chunks.get(pos) : null;
+    }
+
+    @Override
+    public void setChunk(IntVector2 pos) {
+        this.setChunk(pos, null);
+    }
+
+    @Override
+    public void setChunk(IntVector2 pos, BaseFullChunk chunk) {
         if (chunk == null) {
-            this.chunks.remove(new IntVector2(chunkX, chunkZ));
+            this.chunks.remove(pos);
             return;
         }
-        this.chunks.put(new IntVector2(chunkX, chunkZ), chunk);
+        this.chunks.put(pos, chunk);
     }
 
     public void cleanChunks() {
