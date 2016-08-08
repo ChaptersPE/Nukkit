@@ -57,8 +57,8 @@ public class PopulatorCaves extends Populator {
                     if (cavesGenerate[x][z][y] > 0.35F) {
                         if (y > 20) {
                             chunk.setBlock(x, y, z, Block.AIR);
-                            int highest = chunk.getHighestBlockAt(x, z);
-                            /*int light = y < highest ? (highest - y < 10 ? highest - y : 1)  : 10;
+                            /*int highest = chunk.getHighestBlockAt(x, z);
+                            int light = y < highest ? (highest - y < 10 ? highest - y : 1)  : 10;
                             chunk.setBlockSkyLight(x, y, z, light);
                             int bl = 0;
                             if (y < 25) {
