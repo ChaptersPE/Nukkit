@@ -229,7 +229,7 @@ public class BlockVector3 implements Cloneable {
 
 	@Override
 	public int hashCode() {
-		return x + (y << 8) + (z << 16);
+		return (x << 11) | (z << 7) | y;
 	}
 
 	@Override

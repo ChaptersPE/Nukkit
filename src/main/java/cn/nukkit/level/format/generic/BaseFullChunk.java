@@ -327,7 +327,7 @@ public abstract class BaseFullChunk implements FullChunk {
     @Override
     public void removeBlockEntity(BlockEntity blockEntity) {
         this.tiles.remove(blockEntity.getId());
-        int index = ((blockEntity.getFloorZ() & 0x0f) << 12) | ((blockEntity.getFloorX() & 0x0f) << 8) | (blockEntity.getFloorY() & 0xff);
+        int index = ((blockEntity.z & 0x0f) << 12) | ((blockEntity.x & 0x0f) << 8) | (blockEntity.y & 0xff);
         this.tileList.remove(index);
         if (this.isInit) {
             this.hasChanged = true;
