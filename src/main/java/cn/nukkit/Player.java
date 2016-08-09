@@ -667,7 +667,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.spawned = true;
 
         this.server.sendRecipeList(this);
-        this.sendSettings();
+        this.getAdventureSettings().update();
 
         this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getDisplayName(), this.getSkin());
         this.server.sendFullPlayerListData(this, false);
@@ -970,8 +970,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.gamemode = gamemode;
 
-        this.setAdventureSettings(ev.getNewAdventureSettings());
-
         if (this.isSpectator()) {
             this.keepMovement = true;
             this.despawnFromAll();
@@ -985,7 +983,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         SetPlayerGameTypePacket pk = new SetPlayerGameTypePacket();
         pk.gamemode = this.gamemode & 0x01;
         this.dataPacket(pk);
-        this.sendSettings();
+
+        this.setAdventureSettings(ev.getNewAdventureSettings());
 
         if (this.gamemode == Player.SPECTATOR) {
             ContainerSetContentPacket containerSetContentPacket = new ContainerSetContentPacket();
@@ -2356,7 +2355,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                             this.setMovementSpeed(0.1f);
 
-                            this.sendSettings();
+                            this.getAdventureSettings().update();
                             this.inventory.sendContents(this);
                             this.inventory.sendArmorContents(this);
 
