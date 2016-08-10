@@ -61,9 +61,13 @@ public class BlockFarmland extends BlockTransparent {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
-            boolean found = false;
-
             BlockVector3 v = new BlockVector3();
+            
+            if (this.level.getBlock(v.setComponents(x, this.y + 1, z)) instanceof BlockCrops) {
+                return 0;
+            }
+            
+            boolean found = false;
 
             for (int x = this.x - 1; x <= this.x + 1; x++) {
                 for (int z = this.z - 1; z <= this.z + 1; z++) {
