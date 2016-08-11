@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.level.ChunkCoordinate;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
@@ -51,10 +52,7 @@ public abstract class BaseFullChunk implements FullChunk {
     protected LevelProvider provider;
     protected Class<? extends LevelProvider> providerClass;
 
-//    protected int x;
-//    protected int z;
-
-    protected IntVector2 vector2 = new IntVector2();
+    protected ChunkCoordinate vector2 = new ChunkCoordinate();
 
     protected boolean hasChanged = false;
 
@@ -489,7 +487,7 @@ public abstract class BaseFullChunk implements FullChunk {
     }
 
     @Override
-    public IntVector2 getVector2() {
+    public ChunkCoordinate getVector2() {
         return this.vector2;
     }
 }

@@ -2,7 +2,7 @@ package cn.nukkit.level.format;
 
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.math.IntVector2;
+import cn.nukkit.level.ChunkCoordinate;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,7 +21,7 @@ public interface FullChunk extends Cloneable {
 
     void setZ(int z);
 
-    IntVector2 getVector2();
+    ChunkCoordinate getVector2();
 
     LevelProvider getProvider();
 
