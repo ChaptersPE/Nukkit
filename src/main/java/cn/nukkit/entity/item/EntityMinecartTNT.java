@@ -4,6 +4,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.event.entity.EntityExplosionPrimeEvent;
 import cn.nukkit.level.Explosion;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 /**
@@ -19,7 +20,7 @@ public class EntityMinecartTNT extends EntityMinecartEmpty {
     }
 
     public boolean onUpdate(int currentTick) {
-        Block downSide = this.getLocation().floor().getLevelBlock();
+        Block downSide = this.level.getBlock(new BlockVector3(this.getLocation().floor()));
         if (downSide.getId() == Block.ACTIVATOR_RAIL && downSide.isPowered()) {
             explode();
             kill();
