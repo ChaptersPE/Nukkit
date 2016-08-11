@@ -957,9 +957,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         AdventureSettings newSettings = this.getAdventureSettings().clone(this);
-        newSettings.setCanDestroyBlock((gamemode & 0x02) > 0);
-        newSettings.setCanFly((gamemode & 0x01) > 0 && !(gamemode == 0x03));
-        newSettings.setFlying(gamemode == 0x03);
+        newSettings.setCanDestroyBlock((gamemode & 0x02) == 0);
+        newSettings.setCanFly((gamemode & 0x01) > 0);
+        newSettings.setNoclip(gamemode == 0x03);
 
         PlayerGameModeChangeEvent ev;
         this.server.getPluginManager().callEvent(ev = new PlayerGameModeChangeEvent(this, gamemode, newSettings));
@@ -1561,7 +1561,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 .canDestroyBlock(isAdventure())
                 .autoJump(true)
                 .canFly(isCreative())
-                .isFlying(isSpectator())
+                .noclip(isSpectator())
                 .build();
 
         Level level;
