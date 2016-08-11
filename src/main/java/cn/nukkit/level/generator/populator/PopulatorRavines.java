@@ -50,7 +50,7 @@ public class PopulatorRavines extends Populator {
 	}
 
 	protected void generateChunk(ChunkCoordinate currentChunk, FullChunk generatingChunkBuffer) {
-		if(this.random.nextInt(300) >= this.ravineRarity)
+		if(this.random.nextInt(200) >= this.ravineRarity)
 			return;
 		double d1 = currentChunk.getBlockX() + this.random.nextInt(ChunkCoordinate.CHUNK_X_SIZE);
 		double d2 = numberInRange(random, this.ravineMinAltitude, this.ravineMaxAltitude);
@@ -181,13 +181,10 @@ public class PopulatorRavines extends Populator {
 						for(int localY = minY; localY >= maxY; localY--) {
 							double d11 = ((localY - 1) + 0.5D - paramDouble2) / d4;
 							if((d9 * d9 + d10 * d10) * this.a[localY - 1] + d11 * d11 / 6.0D < 1.0D) {
-								int material = generatingChunkBuffer.getBlockId(localX, localY, localZ);
-								if(material == Block.GRASS) {
-									if(localY - 1 < 10) {
-										generatingChunkBuffer.setBlock(localX, localY, localZ, Block.LAVA);
-									} else {
-										generatingChunkBuffer.setBlock(localX, localY, localZ, Block.AIR);
-									}
+								if(localY - 1 < 10) {
+									generatingChunkBuffer.setBlock(localX, localY, localZ, Block.LAVA);
+								} else {
+									generatingChunkBuffer.setBlock(localX, localY, localZ, Block.AIR);
 								}
 							}
 						}

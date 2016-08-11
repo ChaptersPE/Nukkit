@@ -185,7 +185,7 @@ public class PopulatorCaves extends Populator {
 						for(int local_y = i2; local_y > i1; local_y--) {
 							double d11 = ((local_y - 1) + 0.5D - y) / d4;
 							if((d11 > -0.7D) && (d9 * d9 + d11 * d11 + d10 * d10 < 1.0D)) {
-								Biome biome = Biome.getBiome(generatingChunkBuffer.getBiomeId(local_x, local_z)); //this.world.getBiomeAt(local_x, local_z));
+								Biome biome = Biome.getBiome(generatingChunkBuffer.getBiomeId(local_x, local_z));
 								int material = generatingChunkBuffer.getBlockId(local_x, local_y, local_z);
 								int materialAbove = generatingChunkBuffer.getBlockId(local_x, local_y + 1, local_z);
 								if(material == Block.GRASS || material == Block.MYCELIUM)
