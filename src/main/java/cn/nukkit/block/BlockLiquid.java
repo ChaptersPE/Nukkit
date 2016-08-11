@@ -252,7 +252,6 @@ public abstract class BlockLiquid extends BlockTransparent {
                         this.level.setBlock(this, new BlockAir(), true);
                     } else {
                         this.level.setBlock(this, this.getBlock(decay), true);
-                        this.level.scheduleUpdate(this, this.tickRate());
                     }
                 } else if (flag) {
                     //this.level.scheduleUpdate(this, this.tickRate());
@@ -324,7 +323,6 @@ public abstract class BlockLiquid extends BlockTransparent {
             }
 
             this.level.setBlock(block, this.getBlock(newFlowDecay), true);
-            this.level.scheduleUpdate(block, this.tickRate());
         }
     }
 
