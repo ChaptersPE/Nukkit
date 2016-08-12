@@ -20,7 +20,7 @@ public class SimpleCommandMap implements CommandMap {
 
     public SimpleCommandMap(Server server) {
         this.server = server;
-        this.setDefaultCommands();
+        //this.setDefaultCommands();
     }
 
     private void setDefaultCommands() {
