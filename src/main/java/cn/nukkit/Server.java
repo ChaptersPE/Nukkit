@@ -946,6 +946,7 @@ public class Server {
                 }
 
                 this.logger.critical(this.getLanguage().translateString("nukkit.level.tickError", new String[]{level.getName(), e.toString()}));
+                e.printStackTrace();
             }
         }
     }

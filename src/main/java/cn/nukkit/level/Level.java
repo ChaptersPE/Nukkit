@@ -2642,23 +2642,23 @@ public class Level implements ChunkManager, Metadatable {
             int maxUnload = 96;
             long now = System.currentTimeMillis();
 
-            for (IntVector2 index : new ArrayList<>(this.unloadQueue.keySet())) {
-                long time = this.unloadQueue.get(index);
+            Iterator it = this.unloadQueue.entrySet().iterator();
 
-                Chunk.Entry chunkEntry = Level.getChunkXZ(index);
-                int X = chunkEntry.chunkX;
-                int Z = chunkEntry.chunkZ;
+            while(it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
 
-                if (!force) {
-                    if (maxUnload <= 0) {
+                long time = (long) pair.getValue();
+
+                if(!force) {
+                    if(maxUnload <= 0) {
                         break;
                     } else if (time > (now - 30000)) {
                         continue;
                     }
                 }
 
-                if (this.unloadChunk(index, true)) {
-                    this.unloadQueue.remove(index);
+                if(this.unloadChunk((IntVector2) pair.getKey(), true)) {
+                    it.remove();
                     --maxUnload;
                 }
             }
